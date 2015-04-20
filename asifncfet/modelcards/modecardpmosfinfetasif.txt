@@ -1,0 +1,12 @@
+*model card for asif 90nm pmos
++Lg=90e-9
++DEVTYPE=-1
++GEOMOD = 1
++HFIN = 10e-9
++TFIN = 10e-9
++EOT = 1e-9
++NFIN = 200
++PHIG= 4.83
++u0 = 20e-3
++vthdibl = 0.07
++SSrolloff = 0.2

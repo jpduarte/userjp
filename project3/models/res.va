@@ -1,0 +1,78 @@
+//resistance model to check "for loop" issue
+//Juan Duarte, jpduarte@berkeley.edu
+
+
+module res(p,n);
+inout p,n;
+electrical p,n;
+
+parameter real r=0 from [0:inf);
+parameter real L=0 from [0:inf);
+
+real xguess,xiteration;
+real xfinal1,xdirect1;
+real dxdirectdVp1,dxfinaldVp1;
+real xfinal2,xdirect2;
+real dxdirectdVp2,dxfinaldVp2;
+real f,df;
+real Vx;
+integer j,flag_loop,max_itr_NR;
+
+analog function real updatefx;
+    input a,b;
+    real a,b;
+
+    begin
+        updatefx = a+b;
+    end
+endfunction  
+
+analog begin
+    V(p,n) <+ r*I(p,n);
+
+    Vx = V(p,n);
+    
+    ///////////////////////////////////////////////////////////////////////////////
+    //First equation to solve
+    //x^2 = V(p)^2+2; solve this equation    
+    xguess = Vx+0.1;
+    xiteration = xguess;
+    max_itr_NR = 100;
+    
+    for (j=0; j<=max_itr_NR ; j=j+1) begin 
+        f = xiteration*xiteration -( Vx*Vx+2.0);
+        df = 2.0*xiteration;
+        xiteration=xiteration-f/df;
+    end
+    
+    //x values 1
+    xfinal1 = xiteration;
+    xdirect1 = sqrt(Vx*Vx+2.0);
+    
+    ///////////////////////////////////////////////////////////////////////////////
+    //First equation to solve, using analog function
+    //x^2 = V(p)^2+2; solve this equation    
+    xguess = Vx+0.1;
+    xiteration = xguess;
+    max_itr_NR = 100;
+    
+    for (j=0; j<=max_itr_NR ; j=j+1) begin 
+        f = xiteration*xiteration -( Vx*Vx+2.0);
+        df = 2.0*xiteration;
+        xiteration = updatefx(xiteration,-f/df);
+    end
+    
+    //x values 2
+    xfinal2 = xiteration;
+    xdirect2 = sqrt(Vx*Vx+2.0);
+    
+    ///////////////////////////////////////////////////////////////////////////////
+    //derivatives
+    dxfinaldVp1 =  ddx(xfinal1,V(p));
+    dxdirectdVp1 = ddx(xdirect1,V(p));  
+    dxfinaldVp2 =  ddx(xfinal2,V(p));
+    dxdirectdVp2 = ddx(xdirect2,V(p));          
+    
+end
+
+endmodule

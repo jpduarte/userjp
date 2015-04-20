@@ -1,0 +1,19 @@
+//resistance model to check for loop problem
+//Juan Duarte, jpduarte@berkeley.edu
+
+
+module res(p,n);
+inout p,n;
+electrical p,n;
+
+parameter real r=0 from [0:inf);
+parameter real L=0 from [0:inf);
+
+real aux1;
+
+analog begin
+    V(p,n) <+ r*I(p,n);
+    aux1=r;
+end
+
+endmodule

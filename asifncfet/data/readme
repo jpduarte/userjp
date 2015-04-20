@@ -1,0 +1,12 @@
+Please find the data for Lg=90 nm PMOS.  In the .m file, use lines 8-10  to plot the ID-VG at different VD. 
+
+The physical dimensions are as follows: 
+
+Module:  NC
+Gate length Lg= 90 nm
+Fin Width W= 40 nm
+# of Fins N=200
+
+The fin height and the oxide thickness is unknown as far as I know. The fin height should be around 25 nm and the EOT should be ~1 nm or less
+
+

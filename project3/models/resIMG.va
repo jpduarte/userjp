@@ -1,0 +1,362 @@
+//resistance model to check "for loop" issue
+//Juan Duarte, jpduarte@berkeley.edu
+
+
+module resimg(p,n);
+inout p,n;
+electrical p,n;
+
+parameter real r=0 from [0:inf);
+parameter real L=0 from [0:inf);
+parameter real EOT1=0 from [0:inf);
+parameter real EOT2=0 from [0:inf);
+parameter real TSI=0 from [0:inf);
+
+real Vx;
+
+real vgfb1, vgfb2;
+
+//new core
+real k1,k2,A0,xg1,xg2,PHISsat,xg1g,deltaPHISsat,phifguess; 
+real g,dg1,dg2,dg3,f,df;
+integer max_itr_NR,flag_loop,j;
+real deltaold,delta;
+real q2,phi2;
+real phifsnew,phibsnew;
+real phifdnew,phibdnew;
+real qfronts,qfrontd,qbacks,qbackd;
+real alphad,alphas;
+real deltanr,abscri;
+real factortransition;
+real PHISsatline,PHISsatline0;
+real factordelta;
+real Vphisline,dphidxg1;
+real qtots,qtotd, ebs, ebd,eba;
+
+real phibaux;
+
+//Newton method variables
+real q,q1,dq2,qsqrt,dqsqrt,dlogsinhqsq; 
+real dq,qcoth,dqcoth,dqcothqdqsqrt; 
+real sinhqsq, dsinhqsq,qsqoversinhqsq,logsinhqsq,dqsqoversinhqsq,dlogsinhqsqdqsqrt;
+real aaux,baux,caux,daux,eaux,daaux,dbaux,dcaux,ddaux,deaux;
+real phi1;
+
+//
+real nVtm,cox1,cox2,csi,epssi, ni,epsratio;
+
+real dq1,dq2,aux1;
+
+`define q       1.60219e-19 // Coulombs
+`define EPS0        8.85418e-12 // F / m
+`define KboQ        8.61708e-5  // Joule / degree
+// Numerical Constants
+`define EXPL_THRESHOLD  80.0
+`define MAX_EXPL    5.540622384e+34
+`define MIN_EXPL    1.804851387e-35
+`define N_MINLOG    1.0e-38
+`define DELTA_1     0.02
+`define CONSTCtoK   (273.15)
+`define REFTEMP     (300.15) /* 27 degrees C */
+
+// Clamped exponential function
+    analog function real lexp;
+        input x;
+        real x;
+
+     begin
+            if(x > `EXPL_THRESHOLD) begin
+                lexp = `MAX_EXPL * (1.0+(x)-`EXPL_THRESHOLD);
+            end else if(x < -`EXPL_THRESHOLD) begin
+                lexp = `MIN_EXPL;
+            end else begin
+             lexp = exp(x);
+            end
+            end
+    endfunction
+
+
+// Clamped log function
+    analog function real lln;
+        input x;
+        real x;
+
+        begin
+            lln = ln(max(x , `N_MINLOG));
+        end
+    endfunction
+
+// Hyperbolic smoothing function
+    analog function real hypsmooth;
+        input x , c;
+        real x , c;
+
+        begin
+            hypsmooth = 0.5 * (x + sqrt(x*x + 4*c*c));
+        end
+    endfunction
+
+// Hyperbolic smooth max function
+    analog function real hypmax;
+        input   x , xmin, c;
+        real x , xmin, c;
+
+        begin
+            hypmax  =  xmin + 0.5 * (x-xmin-c + sqrt((x-xmin-c)*(x-xmin-c)-4*xmin*c));
+        end
+    endfunction
+
+//cot
+    analog function real cot;
+        input x;
+        real x;
+
+        begin
+            cot = 1/tan(x);
+        end
+    endfunction
+    
+//coth
+    analog function real coth;
+        input x;
+        real x;
+
+        begin
+            coth = 1/tanh(x);
+        end
+    endfunction  
+    
+//connectingfx
+    analog function real connectingfx;
+        input a, b, c;
+        real a, b, c;
+
+        begin
+            connectingfx = a+b-0.5*(a+b-sqrt((a-b)*(a-b)+c));
+        end
+    endfunction        
+
+//connectingfx2
+    analog function real connectingfx2;
+        input a, b, c;
+        real a, b, c;
+
+        begin
+            if (a>0) begin
+                connectingfx2 = 1.0/pow(pow(1.0/a,c)+pow(1.0/b,c),1.0/c);
+            end else begin
+                connectingfx2 = a;            
+            end
+            //connectingfx2 = //0.5*(a+b-sqrt((a-b)*(a-b)+c));
+        end
+    endfunction   
+
+    analog function real connectingfx3;
+        input a, b, c;
+        real a, b, c;
+
+        begin
+            connectingfx3 = 0.5*(a+b-sqrt((a-b)*(a-b)+c));
+        end
+    endfunction  
+
+
+analog begin
+    V(p,n) <+ r*I(p,n);
+
+    Vx = V(p,n);
+    
+    epssi =11.7* `EPS0;
+    nVtm = 0.0259;
+    ni = 1e10*1e6;
+    
+    cox1        = 3.9 * `EPS0 / EOT1;
+    cox2        = 3.9 * `EPS0 / EOT2;
+    csi         = epssi / TSI;
+    epsratio    = 11.7 / 3.9;
+    
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // --------------------------------------------------------
+    //   Source End Surface Potential and Charge Calculation : NEW CORE
+    // --------------------------------------------------------   
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+    vgfb1 = Vx;
+    vgfb2 = 0; 
+       
+    k1  = cox1/csi;
+    k2  = cox2/csi;
+    A0  = (2.0*`q*ni*TSI*TSI)/(epssi*nVtm);
+    xg1 = vgfb1/nVtm;
+    xg2 = (vgfb2  )/nVtm; 
+    
+    //0. 
+    Vphisline = 1.5;
+    xg1g = (Vphisline)/nVtm;
+    PHISsat=ln((2.0*`M_PI)*(2.0*`M_PI)/A0);
+    g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+    if (abs(g)>1.0e-10) begin
+        q1 = -(PHISsat-xg1g); 
+        g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+        dg1 = k1*k1*(2.0*PHISsat - 2.0*xg1g)/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)) - 1.0; 
+        dg2 =-pow(k1,4.0)*pow(2.0*PHISsat - 2.0*xg1g,2.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2) + 2.0*k1*k1/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)); 
+        dg3 = 2.0*pow(k1,6.0)*pow(2.0*PHISsat - 2.0*xg1g,3.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),3.0) - 2.0*pow(k1,4.0)*(2.0*PHISsat - 2.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0) - pow(k1,4.0)*(8.0*PHISsat - 8.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0); 
+        deltaPHISsat = (g/dg1)*(1.0+g*dg2/(2.0*pow(dg1,2.0))+pow(g,2.0)*(3.0*pow(dg2,2.0)-dg1*dg3)/(6.0*pow(dg1,4.0)));
+        PHISsat = PHISsat - deltaPHISsat;
+        g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+            if (abs(g)>1.0e-10) begin
+                PHISsat = PHISsat - deltaPHISsat;
+                q1 = -(PHISsat-xg1g); 
+                g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+                dg1 = k1*k1*(2.0*PHISsat - 2.0*xg1g)/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)) - 1.0; 
+                dg2 =-pow(k1,4.0)*pow(2.0*PHISsat - 2.0*xg1g,2.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2) + 2.0*k1*k1/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)); 
+                dg3 = 2.0*pow(k1,6.0)*pow(2.0*PHISsat - 2.0*xg1g,3.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),3.0) - 2.0*pow(k1,4.0)*(2.0*PHISsat - 2.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0) - pow(k1,4.0)*(8.0*PHISsat - 8.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0); 
+                deltaPHISsat = (g/dg1)*(1.0+g*dg2/(2.0*pow(dg1,2.0))+pow(g,2.0)*(3.0*pow(dg2,2.0)-dg1*dg3)/(6.0*pow(dg1,4.0)));
+                PHISsat = PHISsat - deltaPHISsat;                
+            end    
+    end
+    PHISsatline0 = PHISsat; 
+    dphidxg1 =  0.5*(k1*k1*(Vphisline/nVtm-PHISsatline0)*2.0/(exp(PHISsatline0)*A0+k1*k1*(Vphisline/nVtm-PHISsatline0)*2.0));
+    PHISsatline = PHISsatline0 + dphidxg1*(xg1-Vphisline/nVtm); 
+   
+    //1. saturation potential calculation
+    PHISsat=ln((2.0*`M_PI)*(2.0*`M_PI)/A0);//initial guess for saturation potential calculation
+    xg1g = xg1+PHISsat-0.5*(xg1+PHISsat-sqrt((xg1-PHISsat)*(xg1-PHISsat)+0.002));//connectingfx(xg1,PHISsat,0.002);//clamping of x1 for sat potential calculation only
+    //xg1g = xg1;
+    g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+    if (abs(g)>1.0e-10) begin
+        q1 = -(PHISsat-xg1g); 
+        g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+        dg1 = k1*k1*(2.0*PHISsat - 2.0*xg1g)/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)) - 1.0; 
+        dg2 =-pow(k1,4.0)*pow(2.0*PHISsat - 2.0*xg1g,2.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2) + 2.0*k1*k1/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)); 
+        dg3 = 2.0*pow(k1,6.0)*pow(2.0*PHISsat - 2.0*xg1g,3.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),3.0) - 2.0*pow(k1,4.0)*(2.0*PHISsat - 2.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0) - pow(k1,4.0)*(8.0*PHISsat - 8.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0); 
+        deltaPHISsat = (g/dg1)*(1.0+g*dg2/(2.0*pow(dg1,2.0))+pow(g,2.0)*(3.0*pow(dg2,2.0)-dg1*dg3)/(6.0*pow(dg1,4.0)));
+        PHISsat = PHISsat - deltaPHISsat;
+        g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+            if (abs(g)>1.0e-10) begin
+                PHISsat = PHISsat - deltaPHISsat;
+                q1 = -(PHISsat-xg1g); 
+                g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+                dg1 = k1*k1*(2.0*PHISsat - 2.0*xg1g)/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)) - 1.0; 
+                dg2 =-pow(k1,4.0)*pow(2.0*PHISsat - 2.0*xg1g,2.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2) + 2.0*k1*k1/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)); 
+                dg3 = 2.0*pow(k1,6.0)*pow(2.0*PHISsat - 2.0*xg1g,3.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),3.0) - 2.0*pow(k1,4.0)*(2.0*PHISsat - 2.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0) - pow(k1,4.0)*(8.0*PHISsat - 8.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0); 
+                deltaPHISsat = (g/dg1)*(1.0+g*dg2/(2.0*pow(dg1,2.0))+pow(g,2.0)*(3.0*pow(dg2,2.0)-dg1*dg3)/(6.0*pow(dg1,4.0)));
+                PHISsat = PHISsat - deltaPHISsat;                
+            end    
+    end
+    //2. initial guess for front potential
+    factortransition = 4.0;//0.05;
+    phibaux = -((TSI+epsratio*EOT1)/(TSI+epsratio*(EOT1+EOT2)))*(xg1*nVtm-xg2*nVtm)+xg1*nVtm; 
+    phibaux =  1.0/pow(pow(1.0/phibaux,factortransition)+pow(1.0/(PHISsatline*nVtm),factortransition),1.0/factortransition);//connectingfx2(phibaux,PHISsatline*nVtm,factortransition); 
+    phifguess = -((epsratio*EOT1)/(TSI+epsratio*(EOT1)))*(xg1*nVtm-phibaux)+xg1*nVtm; 
+    //phifguess =  1.0/pow(pow(1.0/phifguess,factortransition)+pow(1.0/(PHISsatline*nVtm),factortransition),1.0/factortransition);//
+    //phifguess = connectingfx2(phifguess,PHISsatline*nVtm,factortransition)/nVtm;
+            if (phifguess>0) begin
+                phifguess = 1.0/pow(pow(1.0/phifguess,factortransition)+pow(1.0/(PHISsatline*nVtm),factortransition),1.0/factortransition);
+            end else begin
+                phifguess = phifguess;            
+            end
+            phifguess = phifguess/nVtm;
+    //3. final potential calculation
+    max_itr_NR = 40;
+    deltanr = 0.25;
+    abscri = 1.0e-7;
+    flag_loop = 0;
+    deltaold=100.0;
+    factordelta = 1.0e-10;//1.0e-10
+    phifguess = phifguess*nVtm;
+    phi1 = phifguess/nVtm;
+    f=1.0;
+    for (j=0; j<=max_itr_NR && flag_loop==0 ; j=j+1) begin 
+        q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        //if( abs(f) > abscri) begin 
+        aux1 = deltanr*(PHISsat-phi1); 
+            //delta = connectingfx3(delta,aux1,factordelta);
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        //end else begin
+         //   flag_loop = 1;       
+        //end
+    end
+    
+
+    phifsnew = phi1*nVtm;
+    phibsnew = phi2*nVtm;
+    qfronts=(xg1-phi1)*cox1*nVtm;
+    qbacks=(xg2-phi2)*cox2*nVtm;
+    qtots=qfronts+qbacks;
+    alphas = qsqrt*(nVtm*nVtm/(TSI*TSI)); 
+         
+    dq1 = ddx(phifsnew,V(p));
+    dq2 = ddx(phifguess,V(p));
+end
+
+endmodule
