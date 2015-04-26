@@ -1,0 +1,105 @@
+// new core model 
+`define bsimimg_sp_phissat(block_name,phi1,k1,xg1g,A0,g,dg1,dg2,dg3,PHISsat) \
+begin : block_name \
+q1 = -(phi1-xg1g); \
+g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-phi1; \
+dg1 = k1*k1*(2.0*phi1 - 2.0*xg1g)/(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)) - 1.0;  \
+dg2 =-pow(k1,4.0)*pow(2.0*phi1 - 2.0*xg1g,2.0)/pow(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2) + 2.0*k1*k1/(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI));  \
+dg3 = 2.0*pow(k1,6.0)*pow(2.0*phi1 - 2.0*xg1g,3.0)/pow(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),3.0) - 2.0*pow(k1,4.0)*(2.0*phi1 - 2.0*xg1g)/pow(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0) - pow(k1,4.0)*(8.0*phi1 - 8.0*xg1g)/pow(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0);  \
+deltaPHISsat = (g/dg1)*(1.0+g*dg2/(2.0*pow(dg1,2.0))+pow(g,2.0)*(3.0*pow(dg2,2.0)-dg1*dg3)/(6.0*pow(dg1,4.0))); \
+PHISsat = phi1 - deltaPHISsat; \
+g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat; \
+end 
+
+`define bsimimg_sp_f(flaginit,abscri,deltanr,factordelta,PHISsat,phiin,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phiout,flag_loopout)  \
+begin : surfpot \
+    real qcoth;\
+    q1 = -(phiin-xg1); \
+    qsqrt = k1*k1*q1*q1-A0*exp(phiin);\
+    /*$strobe("qsqrt %e ", qsqrt);*/\
+            \
+    if (qsqrt < 0.0 ) begin   \
+        q = sqrt(-qsqrt); \
+        /*$strobe("case1");*/\
+        if (q<1.0e-4) begin \
+            qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); \
+            dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; \
+            \
+            qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); \
+            logsinhqsq = ln(max(qsqoversinhqsq , `N_MINLOG));  \
+            dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); \
+            dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); \
+        end else begin \
+            dq = -0.5/q; \
+            qcoth = q*(1.0/tan(q/2.0)); \
+            dqcothqdqsqrt = (-qsqrt)*(-pow((1.0/tan(q/2.0)),2) - 1.0)/(4.0*qsqrt) + q*(1.0/tan(q/2.0))/(2.0*qsqrt); \
+            \
+            sinhqsq = -pow(sin(q/2.0),2); \
+            dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; \
+            logsinhqsq = ln(max(qsqrt/sinhqsq , `N_MINLOG)); \
+            dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); \
+        end \
+    end else begin \
+        q     = sqrt(qsqrt); \
+        /*$strobe("case2");*/\
+        if(q<1.0e-4) begin \
+            qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); \
+            dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; \
+            \
+            qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); \
+            logsinhqsq = ln(max(qsqoversinhqsq , `N_MINLOG)); \
+            dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); \
+            dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); \
+        end else begin \
+            dq = 0.5/q; \
+            sinhqsq = pow(sinh(q/2.0),2.0); \
+            logsinhqsq = ln(max(qsqrt/sinhqsq , `N_MINLOG)); \
+            dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; \
+            dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; \
+            \
+            qcoth = q*(1.0/tanh(q/2.0)); \
+            dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + (1.0/tanh(q/2.0))/(2.0*q); \
+        end \
+    end \
+        \
+    q2 = xg2-xg1+q1+2.0*ln(max(k1*q1+qcoth, `N_MINLOG))-logsinhqsq; \
+    \
+        aaux = -A0*exp(xg1-q1);\
+        baux = (k1*q1)*(k1*q1);\
+        caux = (k1*q1)*(k2*q2);\
+        daux = (k1*q1)*qcoth; \
+        eaux = (k2*q2)*qcoth;  \
+                \
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phiin); \
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt;\
+        dqcoth = dqcothqdqsqrt*dqsqrt;  \
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  \
+                \
+        daaux = aaux; \
+        dbaux = (k1*q1)*2.0*(-k1); \
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  \
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  \
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; \
+               \
+        f = aaux+baux+caux+daux+eaux;  \
+        /*$strobe("f %e ", f);*/\
+        df = daaux+dbaux+dcaux+ddaux+deaux; \
+        phi2 = phiin-2.0*ln(max(k1*q1+qcoth, `N_MINLOG))+logsinhqsq;\
+        delta = -f/df;\
+        \
+         if( flaginit==1) begin \
+            delta = 0.5*(delta+deltanr*(PHISsat-phiin)-sqrt((delta-deltanr*(PHISsat-phiin))*(delta-deltanr*(PHISsat-phiin))+factordelta));\
+            phiout = phiin+delta;\
+            flag_loopout = 0;\
+            /*$strobe("phiout %e ", phiout);*/\
+        end else begin \
+        if( abs(f) > abscri) begin \
+            delta = 0.5*(delta+deltanr*(PHISsat-phiin)-sqrt((delta-deltanr*(PHISsat-phiin))*(delta-deltanr*(PHISsat-phiin))+factordelta));\
+            phiout = phiin+delta;\
+            flag_loopout = 0;\
+            /*$strobe("phiout %e ", phiout);*/\
+        end else begin \
+            flag_loopout = 1; \
+        end \
+        end\
+end 

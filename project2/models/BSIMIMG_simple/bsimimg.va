@@ -1,0 +1,509 @@
+//simple BSIMIMG
+
+`include "constants.vams"
+`include "disciplines.vams"
+`include "common_defs.include"
+`include "bsimimg_sp_new.include"
+
+module bsimimg(d, fg, s, bg);
+    inout d, fg, s, bg;
+    electrical d, fg, s, bg;
+
+// Clamped exponential function
+    analog function real lexp;
+        input x;
+        real x;
+
+     begin
+            if(x > `EXPL_THRESHOLD) begin
+                lexp = `MAX_EXPL * (1.0+(x)-`EXPL_THRESHOLD);
+            end else if(x < -`EXPL_THRESHOLD) begin
+                lexp = `MIN_EXPL;
+            end else begin
+             lexp = exp(x);
+            end
+            end
+    endfunction
+
+
+// Clamped log function
+    analog function real lln;
+        input x;
+        real x;
+
+        begin
+            lln = ln(max(x , `N_MINLOG));
+        end
+    endfunction
+
+// Hyperbolic smoothing function
+    analog function real hypsmooth;
+        input x , c;
+        real x , c;
+
+        begin
+            hypsmooth = 0.5 * (x + sqrt(x*x + 4*c*c));
+        end
+    endfunction
+
+// Hyperbolic smooth max function
+    analog function real hypmax;
+        input   x , xmin, c;
+        real x , xmin, c;
+
+        begin
+            hypmax  =  xmin + 0.5 * (x-xmin-c + sqrt((x-xmin-c)*(x-xmin-c)-4*xmin*c));
+        end
+    endfunction
+
+//cot
+    analog function real cot;
+        input x;
+        real x;
+
+        begin
+            cot = 1.0/tan(x);
+        end
+    endfunction
+    
+//coth
+    analog function real coth;
+        input x;
+        real x;
+
+        begin
+            coth = 1.0/tanh(x);
+        end
+    endfunction  
+    
+//connectingfx
+    analog function real connectingfx;
+        input a, b, c;
+        real a, b, c;
+
+        begin
+            connectingfx = a+b-0.5*(a+b-sqrt((a-b)*(a-b)+c));
+        end
+    endfunction        
+
+//connectingfx2
+    analog function real connectingfx2;
+        input a, b, c;
+        real a, b, c;
+
+        begin
+            if (a>0) begin
+                connectingfx2 = 1.0/pow(pow(1.0/a,c)+pow(1.0/b,c),1.0/c);
+            end else begin
+                connectingfx2 = a;            
+            end
+            //connectingfx2 = //0.5*(a+b-sqrt((a-b)*(a-b)+c));
+        end
+    endfunction   
+
+    analog function real connectingfx3;
+        input a, b, c;
+        real a, b, c;
+
+        begin
+            connectingfx3 = 0.5*(a+b-sqrt((a-b)*(a-b)+c));
+        end
+    endfunction  
+    
+// Node definitions
+`define IntrinsicDrain  d
+`define IntrinsicSource s
+`define  IntrinsicGate fg
+`define GateEdgeNode   fg        
+
+`IPRco( L              ,30n            ,"m"           ,1n          ,inf         ,"Designed Gate Length" ) 
+`IPRco( W              ,1u             ,"m"           ,1n          ,inf         ,"Designed Gate Width" ) 
+`MPIty( TYPE           ,`ntype         ,""                                      ,"NMOS=1, PMOS=-1" ) 
+`MPIty( WELLTYPE       ,-TYPE          ,""                                      ,"Well (substrate) type" ) 
+`MPRco( EOT1           ,1.0n           ,"m"           ,0.1n        ,inf         ,"Equivalent front gate dielectric thickness relative to SiO2" ) 
+`MPRco( EOT2           ,10n            ,"m"           ,0.1n        ,inf         ,"Equivalent back  gate dielectric thickness relative to SiO2" )
+`MPRco( TSI            ,8.0n           ,"m"           ,1n          ,inf         ,"Body thickness" ) 
+`MPRcc( NBODY          ,1e22           ,"m^-3"        ,1e18        ,5e24        ,"channel (body) doping" ) 
+`MPRcc( NSD            ,2e26           ,"m^-3"        ,2e25        ,1e27        ,"Source/drain active doping concentration" ) 
+`MPRnb( NBG            ,5.0e23         ,"m^-3"                                  ,"Well/substrate (or also called back-gate) doping, zero for metal" ) 
+`MPRcz( EASUB          ,4.05           ,"eV"                                    ,"Electron affinity of well/substrate" ) 
+`MPRoz( NI0SUB         ,1.1e16         ,"m^-3"                                  ,"Intrinsic carrier constant at 300.15K" ) 
+`MPRnb( BG0SUB         ,1.12           ,"eV"                                    ,"Band gap of well/substrate at 300.15K" ) 
+`MPRoz( NC0SUB         ,2.86e25        ,""                                      ,"Conduction band density of states" ) 
+`MPRnb( PHIG1          ,4.61           ,"eV"                                    ,"Front Gate Workfunction" ) 
+`MPRnb( PHIG2          ,((WELLTYPE == `ptype) ? (EASUB + BG0SUB) : EASUB),"eV"  ,"Back gate workfunction, will be modified according to NBG later in the code" ) 
+`MPRnb( EPSRSUB        ,11.9           ,""                                      ,"Relative dielectric constant of the channel material" ) 
+`MPRnb( EPSROX1        ,3.9            ,""                                      ,"Relative dielectric constant of the front gate dielectric" ) 
+`MPRex( U0             ,0.03           ,"m^2/(V*s)"   ,0.0                      ,"Low Field Mobility" )
+`MPRco( TNOM           ,27.0           ,"Celsius"     ,-273.15     ,inf         ,"Temperature at which the model is extracted" ) 
+
+// Temperature Effects 
+`MPRnb( TBGASUB        ,7.02e-4        ,"eV/K"                                  ,"Bandgap Temperature Coefficient" ) 
+`MPRnb( TBGBSUB        ,1108.0         ,"K"                                     ,"Bandgap Temperature Coefficient" )
+
+// Common Variables
+real Lnew, LeffCV, Leff, Weff, WeffCV, Wnew, L_LLN, W_LWN, LW_LLN_LWN, dLIV, L_WLN, W_WWN, LW_WLN_WWN, dWIV, dLCV, dWCV;
+real epssi, cox1,cox1P, cox2, csi, epsratio;
+real vfgs, vbgs, vbgd, vbgx, vds, sigvds, vbgxpos;
+real vgs_noswap, vds_noswap, vgd_noswap, vbgs_noswap, vbgd_noswap;
+real T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11;
+real qia,qia2, qba, dqi;
+real phib, phisub, deltaphi1, deltaphi2;
+real Eg, Vtm;
+real beta;
+real wf, wr;
+real Nc;
+real qb0;                          
+real dvth_nbody;                         
+real tmp,  QMTCENCV_i, Tcen0, Tcen, coxeff;
+// Terminal Voltage Conditioning Variables
+real vgfb1, vgfb2, vgfb1eff, vgfb2eff;
+real vdsx, symmetry_factor;
+// IV Variables
+integer devsign, welsign;
+real ids, ids0, ids0_ov_dqi;
+// CV Variables
+real qs, qd, qfg, qbg;
+real IMGTOXP;   
+real qsi, qdi,qfgi, qbgi; 
+// Temperature Effects
+real Tnom, TRatio, delTemp;
+real PhiRef, PhiSD, ni;
+real dvth_temp, dvth_temp0;
+real BETA0_t, BGIDL_t, BGISL_t, igtemp, ETA0_t;
+real DevTemp;
+
+//new core
+real k1,k2,A0,xg1,xg2,PHISsat,xg1g,deltaPHISsat,phifguess; 
+real g,dg1,dg2,dg3,f,df;
+integer max_itr_NR,flag_loop,j;
+real deltaold,delta;
+real q2,phi2;
+real phifsnew,phibsnew;
+real phifdnew,phibdnew;
+real qfronts,qfrontd,qbacks,qbackd;
+real alphad,alphas;
+real deltanr,abscri;
+real factortransition;
+real factordelta;
+real qtots,qtotd, ebs, ebd,eba;
+real phisguesss,phisguessd,phisats,phisatd;
+
+real phibaux;
+
+//Newton method variables
+real q,q1,dq2,qsqrt,dqsqrt,dlogsinhqsq; 
+real dq,qcoth,dqcoth,dqcothqdqsqrt; 
+real sinhqsq, dsinhqsq,qsqoversinhqsq,logsinhqsq,dqsqoversinhqsq,dlogsinhqsqdqsqrt;
+real aaux,baux,caux,daux,eaux,daaux,dbaux,dcaux,ddaux,deaux;
+real phi1;
+
+real PHIG1_i, PHIG2_i; 
+real nVtm;
+
+// Output variables
+`OPP( IDS      , "A"   , "Drain-Source current")
+`OPP( QFG      , "C"   , "Front Gate Charge")
+`OPP( QBG      , "C"   , "Back Gate Charge")
+`OPP(  QD      , "C"   , "Drain Charge")
+`OPP(  QS      , "C"   , "Source Charge")
+`OPP( CFGD     , "F"   , " fg-d MOSFET capacitance")
+`OPP( CFGFG    , "F"   , " fg-fg MOSFET capacitance")
+`OPP( CFGS     , "F"   , " fg-s MOSFET capacitance")
+`OPP( CFGBG    , "F"   , " fg-bg MOSFET capacitance")
+`OPP( CBGD     , "F"   , " bg-d MOSFET capacitance")
+`OPP( CBGFG    , "F"   , " bg-fg MOSFET capacitance")
+`OPP( CBGS     , "F"   , " bg-s MOSFET capacitance")
+`OPP( CBGBG    , "F"   , " bg-bg MOSFET capacitance")
+`OPP(  CDD     , "F"   , " d-d MOSFET capacitance")
+`OPP( CDFG     , "F"   , " d-fg MOSFET capacitance")
+`OPP(  CDS     , "F"   , " d-s MOSFET capacitance")
+`OPP( CDBG     , "F"   , " d-bg MOSFET capacitance")
+`OPP( CSBG     , "F"   , " s-bg MOSFET capacitance")
+`OPP( CSFG     , "F"   , " s-fg MOSFET capacitance")
+`OPP( QFGI     , "C"   , " Intrinsic Front Gate Charge")
+`OPP( QBGI     , "C"   , " Intrinsic Back Gate Charge")
+`OPP(  QDI     , "C"   , " Intrinsic Drain Charge")
+`OPP(  QSI     , "C"   , " Intrinsic Source Charge")
+`OPP(CFGDI     , "F"   , " Intrinsic fg-d MOSFET capacitance")
+`OPP(CFGFGI    , "F"   , " Intrinsic fg-fg MOSFET capacitance")
+`OPP(CFGSI     , "F"   , " Intrinsic fg-s MOSFET capacitance")
+`OPP(CSFGI     , "F"   , " Intrinsic s-fg MOSFET capacitance")
+`OPP(CFGBGI    , "F"   , " Intrinsic fg-bg MOSFET capacitance")
+`OPP(CBGDI     , "F"   , " Intrinsic bg-d MOSFET capacitance")
+`OPP(CBGFGI    , "F"   , " Intrinsic bg-fg MOSFET capacitance")
+`OPP(CBGSI     , "F"   , " Intrinsic bg-s MOSFET capacitance")
+`OPP(CSBGI     , "F"   , " Intrinsic s-bg MOSFET capacitance")
+`OPP(CBGBGI    , "F"   , " Intrinsic bg-bg MOSFET capacitance")
+`OPP(CDDI      , "F"   , " Intrinsic d-d MOSFET capacitance")
+`OPP(CDFGI     , "F"   , " Intrinsic d-fg MOSFET capacitance")
+`OPP( CDSI     , "F"   , " Intrinsic d-s MOSFET capacitance")
+`OPP(CDBGI     , "F"   , " Intrinsic d-bg MOSFET capacitance")
+
+analog begin
+
+//TODO: put this out of analog?
+    if( TYPE == `ntype ) begin devsign =  1;
+    end else begin             devsign = -1;
+    end
+    
+    if( WELLTYPE == `ntype ) begin welsign =  1;
+    end else begin                 welsign = -1;
+    end
+    // Constants 
+    epssi  = EPSRSUB * `EPS0;  
+    cox1        = 3.9 * `EPS0 / EOT1;
+    cox2        = 3.9 * `EPS0 / EOT2;
+    csi         = epssi / TSI;
+    epsratio    = EPSRSUB / 3.9;
+    
+    DevTemp = $temperature ;
+    begin : IMGTempDepCalc
+        // Temperature Dependent Physical Quantities
+        Vtm     = `KboQ * DevTemp;
+        Eg      = BG0SUB ;
+        ni      = NI0SUB ;
+        //PhiRef   = (TYPE == `ntype) ? EASUB : EASUB + Eg;
+        PhiRef = EASUB + Eg/2;
+        deltaphi1= devsign * (PHIG1 - PhiRef);
+        deltaphi2= devsign * (PHIG2 - PhiRef);  
+    end //End of IMGTempDepCalc
+       
+    /************************************************/
+    /*  Bias dependent calculations follow          */
+    /************************************************/
+
+    // Load Terminal Voltages
+    vgs_noswap  = devsign * V(`IntrinsicGate, `IntrinsicSource);
+    vds_noswap  = devsign * V(`IntrinsicDrain, `IntrinsicSource);
+    vgd_noswap  = devsign * V(`IntrinsicGate, `IntrinsicDrain);
+    vbgs_noswap = devsign * V(bg, `IntrinsicSource);
+    vbgd_noswap = devsign * V(bg, `IntrinsicDrain);
+    vds         = devsign * V(`IntrinsicDrain, `IntrinsicSource);
+
+
+    // Source-drain Interchange
+    sigvds      = 1.0;
+    if(vds < 0.0) begin
+        sigvds  = -1.0;
+        vfgs    = vgd_noswap;
+        vbgs    = vbgd_noswap;
+        vbgd    = vbgs_noswap;
+        vds     = -1.0 * vds;
+    end else begin
+        vfgs    = vgs_noswap;
+        vbgs    = vbgs_noswap;
+        vbgd    = vbgd_noswap;
+    end
+    
+    //  Terminal Voltage Conditioning
+    vdsx        = sqrt(vds * vds + 0.0004) - 0.02;
+    symmetry_factor = 0.5 * (vdsx - vds);
+    vbgx        = vbgs + symmetry_factor; 
+    vgfb1       = vfgs - deltaphi1;  
+    vgfb2       = vbgs - deltaphi2;    
+    nVtm        = Vtm  ; 
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // --------------------------------------------------------
+    //   Source End Surface Potential and Charge Calculation : NEW CORE
+    // --------------------------------------------------------   
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    $strobe("source calculation") ;     
+    k1  = cox1/csi;
+    k2  = cox2/csi;
+    A0  = (2.0*`q*ni*TSI*TSI)/(epssi*nVtm);
+    xg1 = vgfb1/nVtm;
+    xg2 = (vgfb2 )/nVtm; 
+    
+  
+    //1. saturation potential calculation
+    PHISsat=ln((2.0*`M_PI)*(2.0*`M_PI)/A0);//initial guess for saturation potential calculation
+    //xg1g = connectingfx(xg1,PHISsat,0.002);//clamping of x1 for sat potential calculation only
+    xg1g = xg1;
+    g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+    if (abs(g)>1.0e-10) begin
+        `bsimimg_sp_phissat(surfsat,PHISsat,k1,xg1g,A0,g,dg1,dg2,dg3,PHISsat)
+            if (abs(g)>1.0e-10) begin
+                `bsimimg_sp_phissat(surfsat,PHISsat,k1,xg1g,A0,g,dg1,dg2,dg3,PHISsat)  
+                if (abs(g)>1.0e-10) begin
+                    `bsimimg_sp_phissat(surfsat,PHISsat,k1,xg1g,A0,g,dg1,dg2,dg3,PHISsat)                
+                end                              
+            end    
+    end
+    phisats = PHISsat*nVtm;
+    //2. initial guess for front potential
+    factortransition = 1.0e-2;//10.0;//0.05;
+    phibaux = -((TSI+epsratio*EOT1)/(TSI+epsratio*(EOT1+EOT2)))*(xg1*nVtm-xg2*nVtm)+xg1*nVtm; 
+    phibaux =  connectingfx3(phibaux,PHISsat*nVtm,factortransition); 
+    phifguess = -((epsratio*EOT1)/(TSI+epsratio*(EOT1)))*(xg1*nVtm-phibaux)+xg1*nVtm; 
+    phifguess =  connectingfx3(phifguess,PHISsat*nVtm,factortransition)/nVtm;
+    
+    phisguesss = phifguess*nVtm;
+    //3. final potential calculation
+    max_itr_NR = 20;
+    deltanr = -0.5*vbgs+0.7;
+    deltanr = connectingfx3(deltanr,0.9,1e-4);
+    deltanr = connectingfx(deltanr,0.2,1e-4);
+    abscri = 1.0e-7;
+    flag_loop = 0;
+    factordelta = 1.0e-10;//1.0e-10
+    phi1 = phifguess;
+
+    `include "potential_iteration.include"
+
+    phifsnew = phi1*nVtm;
+    phibsnew = phi2*nVtm;
+    qfronts=(xg1-phi1)*cox1*nVtm;
+    qbacks=(xg2-phi2)*cox2*nVtm;
+    qtots=qfronts+qbacks;
+    alphas = qsqrt*(nVtm*nVtm/(TSI*TSI)); 
+   
+    ebs = q2*cox2*nVtm/epssi;
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////        
+    // --------------------------------------------------------
+    //   Drain End Surface Potential and Charge Calculation : NEW CORE
+    // -------------------------------------------------------- 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////       
+    $strobe("drain calculation") ;  
+    A0  = (2.0*`q*ni*TSI*TSI)/(epssi*nVtm);
+    xg1 = (vgfb1 - vds)/nVtm;
+    xg2 = (vgfb2 - vds)/nVtm; 
+    
+    //1. saturation potential calculation
+    PHISsat=ln((2.0*`M_PI)*(2.0*`M_PI)/A0);//initial guess for saturation potential calculation
+    //xg1g = connectingfx(xg1,PHISsat,0.002);//clamping of x1 for sat potential calculation only
+    xg1g = xg1;
+    g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+    if (abs(g)>1.0e-10) begin
+        `bsimimg_sp_phissat(surfsat,PHISsat,k1,xg1g,A0,g,dg1,dg2,dg3,PHISsat)
+            if (abs(g)>1.0e-10) begin
+                `bsimimg_sp_phissat(surfsat,PHISsat,k1,xg1g,A0,g,dg1,dg2,dg3,PHISsat)  
+                if (abs(g)>1.0e-10) begin
+                    `bsimimg_sp_phissat(surfsat,PHISsat,k1,xg1g,A0,g,dg1,dg2,dg3,PHISsat)                
+                end                              
+            end    
+    end
+    phisatd = PHISsat*nVtm;        
+    //2. initial guess
+    phibaux = -((TSI+epsratio*EOT1)/(TSI+epsratio*(EOT1+EOT2)))*(xg1*nVtm-xg2*nVtm)+xg1*nVtm; 
+    phibaux =  connectingfx3(phibaux,PHISsat*nVtm,factortransition); 
+    phifguess = -((epsratio*EOT1)/(TSI+epsratio*(EOT1)))*(xg1*nVtm-phibaux)+xg1*nVtm; 
+    phifguess =  connectingfx3(phifguess,PHISsat*nVtm,factortransition)/nVtm;
+
+    //3. final potential
+    flag_loop = 0;
+    phi1 = phifguess; 
+    phidguesss = phifguess*nVtm;
+
+    `include "potential_iteration.include"
+  
+    phifdnew = phi1*nVtm;
+    phibdnew = phi2*nVtm;
+    qfrontd=(xg1-phi1)*cox1*nVtm;
+    qbackd=(xg2-phi2)*cox2*nVtm;
+    qtotd=qfrontd+qbackd;
+    alphad = qsqrt*(nVtm*nVtm/(TSI*TSI));       
+
+    ebd = q2*cox2*nVtm/epssi;   
+    
+    // ------------------------------------
+    //    I-V Equation
+    // ------------------------------------
+    ids0            = (2.0*Vtm*(qfronts-qfrontd)-0.5*(qfrontd*qfrontd/cox1-qfronts*qfronts/cox1)+2.0*Vtm*(qbacks-qbackd)-0.5*(qbackd*qbackd/cox2-qbacks*qbacks/cox2));//+0.5*TSI*epssi*(alphas-alphad);
+    ids = (U0 * W / L) * ids0;     
+    // ------------------------------------
+    //    C-V Equation
+    // ------------------------------------
+    qfg = (qfrontd+qfronts)/2.0;
+    qd  = (1.0/6.0)*(qtots+2.0*qtotd);
+    qs  = (1.0/6.0)*(2.0*qtots+qtotd);
+    qbg = (qbackd+qbacks)/2.0;                   
+      
+    T0      = W * L;//coxeff removed         
+    qfg     = qfg * T0;
+    qd      = -qd * T0;
+    qbg     = qbg * T0;
+    qs      = -qs * T0; 
+    
+    qfgi = qfg;
+    qdi  = qd;
+    qsi  = qs;
+    qbgi = qbg;     
+    
+    if (sigvds > 0) begin
+        qsi = qs; 
+        qdi = qd;
+        qs  = (qs);
+        qd  = (qd);
+    end else begin
+        qsi = qd; 
+        qdi = qs; 
+        T0  = (qd);
+        qd  = (qs);
+        qs  = T0 ;
+    end
+    
+    if (sigvds > 0) begin
+        I(`IntrinsicDrain, `IntrinsicSource)    <+ devsign * ids + (GDSMIN * V(`IntrinsicDrain,`IntrinsicSource));
+        I(`IntrinsicSource, `IntrinsicDrain)    <+ 0.0;
+        I(`IntrinsicDrain, `IntrinsicSource)    <+ 0.0;
+        I(`IntrinsicGate, `IntrinsicDrain)      <+ 0.0;
+        I(`IntrinsicGate, `IntrinsicSource)     <+ 0.0;
+
+    end else begin
+        I(`IntrinsicSource, `IntrinsicDrain)    <+ devsign * ids + (GDSMIN * V(`IntrinsicSource,`IntrinsicDrain));
+        I(`IntrinsicSource, `IntrinsicDrain)    <+ 0.0;
+        I(`IntrinsicDrain, `IntrinsicSource)    <+ 0.0;
+        I(`IntrinsicGate, `IntrinsicDrain)      <+ 0.0;
+        I(`IntrinsicGate, `IntrinsicSource)     <+ 0.0;
+
+    end
+    
+    // Operation Point Info
+    IDS     = devsign * sigvds * ids;
+    /*Intrinsic Charges*/
+    QFGI    = devsign * qfgi;
+    QBGI    = devsign * qbgi;
+    QDI     = devsign * qdi;
+    QSI     = devsign * qsi;
+    /*Total Charges*/
+    QFG     = devsign * qfg;
+    QBG     = devsign * qbg;
+    QD  = devsign * qd;
+    QS  = devsign * qs;
+    //Intrinsic Capacitances
+    CFGDI   = -ddx(QFGI, V(`IntrinsicDrain));
+    CFGFGI  = ddx(QFGI, V(`IntrinsicGate));
+    CFGSI   = -ddx(QFGI, V(`IntrinsicSource));
+    CSFGI   = -ddx(QSI, V(`IntrinsicGate));
+    CFGBGI  = -ddx(QFGI, V(bg));
+    CBGDI   = -ddx(QBGI, V(`IntrinsicDrain));
+    CBGFGI  = -ddx(QBGI, V(`IntrinsicGate));
+    CBGSI   = -ddx(QBGI, V(`IntrinsicSource));
+    CSBGI   = -ddx(QSI,V(bg));
+    CBGBGI  = ddx(QBGI, V(bg));
+    CDDI    = ddx(QDI, V(`IntrinsicDrain));
+    CDFGI   = -ddx(QDI, V(`IntrinsicGate));
+    CDSI    = -ddx(QDI, V(`IntrinsicSource));
+    CDBGI   = -ddx(QDI, V(bg));
+    //Total Capacitances
+    CFGD    = -ddx(QFG, V(`IntrinsicDrain));
+    CFGFG   = ddx(QFG, V(`IntrinsicGate));
+    CFGS    = -ddx(QFG, V(`IntrinsicSource));
+    CSFG    = -ddx(QS, V(`IntrinsicGate));
+    CFGBG   = -ddx(QFG, V(bg));
+    CBGD    = -ddx(QBG, V(`IntrinsicDrain));
+    CBGFG   = -ddx(QBG, V(`IntrinsicGate));
+    CBGS    = -ddx(QBG, V(`IntrinsicSource));
+    CSBG    = -ddx(QS,V(bg));
+    CBGBG   = ddx(QBG, V(bg));
+    CDD     = ddx(QD, V(`IntrinsicDrain));
+    CDFG    = -ddx(QD, V(`IntrinsicGate));
+    CDS     = -ddx(QD, V(`IntrinsicSource));
+    CDBG    = -ddx(QD, V(bg));             
+end
+
+endmodule
+
