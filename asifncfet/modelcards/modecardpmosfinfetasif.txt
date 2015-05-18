@@ -2,18 +2,18 @@
 
 +DEVTYPE=-1
 +GEOMOD = 1
-+IDSMOD = 1
++IDSMOD = 3
 
-+Lg = 90e-9
++Lg = 70e-9
 +HFIN = 35e-9
 +TFIN = 35e-9
 +EOT = 0.7e-9
 +NFIN = 200
-+PHIG= 4.732
++PHIG= 4.775
 +Nch = 1e20
 
-+vthdibl = 0.07
-+SSrolloff = 0.2
++vthdibl = 0.06
++SSrolloff = 0.3
 +QMFACTORCV = 0.7
 
 

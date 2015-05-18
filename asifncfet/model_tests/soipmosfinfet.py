@@ -35,9 +35,9 @@ sim1.updateparameter('dcbiases',[[-0.05,-0.5,-0.9], np.linspace(-0.9,0,100), [0]
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['Lg'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[90e-9]])
+sim1.updateparameter('deviceparametervalue',[[70e-9]])
 #add variables to save  
-sim1.updateparameter('vartosave',['Ids','mu','qd','qs'])#no ok: CBGSI,,'Ft','t','c','mu','mudop','muc','muac','musr'
+sim1.updateparameter('vartosave',['Ids','mu','qd','qs','vdsat','Vd'])#no ok: CBGSI,,'Ft','t','c','mu','mudop','muc','muac','musr'
 
 ###########################################################################
 ##################Simulation Excecution####################################
@@ -91,6 +91,11 @@ P1.plotfiledata(pathandfile,Vx,sim1.vartosave[1],3)
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[2],4)
 P1.updateparameter('symbol','o') 
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[3],4)
+
+P1.updateparameter('symbol','-') 
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[4],5)
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[5],5)
+
 ###################################################
 """
 P1.updateparameter('ylogflag',0)
