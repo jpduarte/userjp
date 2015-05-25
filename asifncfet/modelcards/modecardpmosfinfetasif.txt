@@ -2,7 +2,7 @@
 
 +DEVTYPE=-1
 +GEOMOD = 1
-+IDSMOD = 3
++IDSMOD = 1
 
 +Lg = 70e-9
 +HFIN = 35e-9
@@ -16,5 +16,11 @@
 +SSrolloff = 0.3
 +QMFACTORCV = 0.7
 
++vsat= 16.64e4
++MODmuc = 0
++lombardi_C = 2.947e3
++lombardi_delta = 2.0546e14
++lombardi_eta = 2.0546e30
++rcoulomb_s = 0.00001
 
 
