@@ -33,9 +33,9 @@ sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
 sim1.updateparameter('dcbiases',[[-0.05,-0.5,-0.9], np.linspace(-0.9,0,100), [0], [0]]) #
 #device parameters defined to sweep in simulation
-sim1.updateparameter('deviceparameter',['Lg'])
+sim1.updateparameter('deviceparameter',['Lg','Rs'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[70e-9]])
+sim1.updateparameter('deviceparametervalue',[[70e-9],[0,10000]])
 #add variables to save  
 sim1.updateparameter('vartosave',['Ids','mu','qd','qs','vdsat','Vd'])#no ok: CBGSI,,'Ft','t','c','mu','mudop','muc','muac','musr'
 

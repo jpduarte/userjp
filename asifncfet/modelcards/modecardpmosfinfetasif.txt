@@ -18,9 +18,9 @@
 
 +vsat= 16.64e4
 +MODmuc = 0
-+lombardi_C = 2.947e3
-+lombardi_delta = 2.0546e14
-+lombardi_eta = 2.0546e30
++lombardi_C = 15e3
++lombardi_delta = 0.7e14
++lombardi_eta = 0.1e30
 +rcoulomb_s = 0.00001
 
 
