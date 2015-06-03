@@ -33,11 +33,11 @@ sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
 sim1.updateparameter('dcbiases',[[-0.05,-0.5,-0.9], np.linspace(-0.9,0,100), [0], [0]]) #
 #device parameters defined to sweep in simulation
-sim1.updateparameter('deviceparameter',['Lg','Rs'])
+sim1.updateparameter('deviceparameter',['Lg'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[70e-9],[0,10000]])
+sim1.updateparameter('deviceparametervalue',[[70e-9]])
 #add variables to save  
-sim1.updateparameter('vartosave',['Ids','mu','qd','qs','vdsat','Vd'])#no ok: CBGSI,,'Ft','t','c','mu','mudop','muc','muac','musr'
+sim1.updateparameter('vartosave',['Ids','Qg'])#no ok: CBGSI,,'Ft','t','c','mu','mudop','muc','muac','musr'
 
 ###########################################################################
 ##################Simulation Excecution####################################
@@ -50,7 +50,7 @@ P1 = plotgeneral.plotgeneral()
 P1.updateparameter('ylogflag',0)
 #plot derivative, 1 indicates derivative order
 P1.updateparameter('symbol','o') 
-P1.updateparameter('markersize',8) 
+P1.updateparameter('markersize',10) 
 pathandfile = rootfolder+'/userjp/asifncfet/data/ID_VG_NCp90nm_Vdd_50mV.txt'
 P1.plotfiledata(pathandfile,'Vg','Id',1)
 pathandfile =  rootfolder+'/userjp/asifncfet/data/ID_VG_NCp90nm_Vdd_500mV.txt'
@@ -65,11 +65,12 @@ P1.updateparameter('lw',2)
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],1)
 ax = plt.gca()
 ax.set_xlim([-0.9,0])
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[1],3)
 
 P1.updateparameter('ylogflag',1)
 #plot derivative, 1 indicates derivative order
 P1.updateparameter('symbol','o') 
-P1.updateparameter('markersize',8) 
+P1.updateparameter('markersize',10) 
 pathandfile = rootfolder+'/userjp/asifncfet/data/ID_VG_NCp90nm_Vdd_50mV.txt'
 P1.plotfiledata(pathandfile,'Vg','Id',2)
 pathandfile =  rootfolder+'/userjp/asifncfet/data/ID_VG_NCp90nm_Vdd_500mV.txt'
@@ -85,6 +86,8 @@ P1.updateparameter('symbol','-')
 P1.updateparameter('lw',2)
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],2)
 
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[1],4)
+'''
 P1.updateparameter('ylogflag',0)
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[1],3)
 
@@ -95,7 +98,7 @@ P1.plotfiledata(pathandfile,Vx,sim1.vartosave[3],4)
 P1.updateparameter('symbol','-') 
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[4],5)
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[5],5)
-
+'''
 ###################################################
 """
 P1.updateparameter('ylogflag',0)
