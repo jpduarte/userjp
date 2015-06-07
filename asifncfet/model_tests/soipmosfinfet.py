@@ -21,7 +21,7 @@ sim1 = pycsimpython.pycsimpython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
 sim1.updateparameter('modelpath',rootfolder+'/cmdp/compactmodels/UFCM.py')
 #add path to model card of device under study
-sim1.updateparameter('modelcardpath',rootfolder+'/userjp/asifncfet/modelcards/modecardpmosfinfetasif.txt')
+sim1.updateparameter('modelcardpath',rootfolder+'/userjp/asifncfet/modelcards/modecardpmosfinfetasifFINAL1.txt')
 #add path to folder which will contain simulation files
 sim1.updateparameter('simulationfolder',rootfolder+'/userjp/asifncfet/pythonsimulations/idvg/')
 #define simulation file name

@@ -26,5 +26,3 @@
 +lombardi_delta = 0.7e14
 +lombardi_eta = 0.1e30
 +rcoulomb_s = 0.00001
-
-

@@ -1,120 +1,28 @@
 *model card for Asif 90nm pmos
 
-
-
-
-
-
-
 +DEVTYPE=-1
-
-
-
 +GEOMOD = 1
-
-
-
 +IDSMOD = 1
 
-
-
-
-
-
-
-+Lg = 7.14780873128e-08
-
-
-
++Lg = 6.98101700114e-08
 +HFIN = 40e-9
-
-
-
 +TFIN = 35e-9
-
-
-
-+tins = 1.00012112055e-09
-
-
-
++tins = 3.87066736422e-10
 +NFIN = 200
-
-
-
 +PHIG= 4.76
-
-
-
 +Nch = 1e20
 
-
-
-
-
-
-
 +vthdibl = 0.06
-
-
-
 +SSrolloff = 0.3
-
-
-
 +QMFACTORCV = 0.4
-
-
-
-+Rs=6500
-
-
-
++Rs = 8642.52638569
 +Rd=6500
-
-
-
 +lombardi_B=9.925e9
-
-
-
 +lombardi_eta = 2.0546e31
 
-
-
-
-
-
-
-+vsat= 2.5e5
-
-
-
++vsat = 653931.919796
 +MODmuc = 0
-
-
-
 +lombardi_C = 15e3
-
-
-
-+lombardi_delta = 0.7e14
-
-
-
++lombardi_delta = 1.88004044456e+14
 +lombardi_eta = 0.1e30
-
-
-
 +rcoulomb_s = 0.00001
-
-
-
-
-
-
-
-
-
-
-
