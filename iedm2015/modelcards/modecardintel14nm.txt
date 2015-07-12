@@ -4,6 +4,13 @@
 +GEOMOD = 2
 +IDSMOD = 1
 +RDSMOD = 0
+*+VTHROMOD         = 1
+*+VTHDIBLMOD       = 1
+*+SSMOD           = 1
+*+countRmodel = 0
++nssshift=100.0
++betavsat=2.0
++QMFACTORCV=0
 
 +tins = 0.8e-9
 +HFIN             = 42e-9 

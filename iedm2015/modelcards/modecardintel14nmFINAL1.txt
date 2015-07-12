@@ -4,6 +4,13 @@
 +GEOMOD = 2
 +IDSMOD = 1
 +RDSMOD = 0
+*+VTHROMOD         = 1
+*+VTHDIBLMOD       = 1
+*+SSMOD           = 1
+*+countRmodel = 0
++nssshift=100.0
++vsat = 245541.26449
++QMFACTORCV = 0.963368049765
 
 +tins = 0.8e-9
 +HFIN             = 42e-9 
@@ -11,11 +18,11 @@
 +TFIN_BASE_L      = 3.5e-9    
 +TFIN_TOP_R       = 3.5e-9 
 +TFIN_BASE_R      = 3.5e-9  
-+PHIG = 4.28944871317
-+Rs = 891.505308073
++PHIG = 4.46792249686
++Rs = 1036.14984998
 +VTHROFIT = 1
 +VTHDIBLFIT = 0.5
-+QMFACTORCV = 1.72570667886
++QMFACTORCV = 0.963368049765
 +lamdafitSS = 1
 +fitSSall = 150
 
@@ -26,8 +33,8 @@
 +MODmuc = 0
 
 *parameters for mobility and current saturation
-+vsat = 304311.198669
-+vsat = 304311.198669
++vsat = 245541.26449
++vsat = 245541.26449
     
 +ul = 1417.0
 +xi = 2.5  

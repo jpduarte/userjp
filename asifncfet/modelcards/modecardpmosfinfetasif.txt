@@ -11,6 +11,7 @@
 +NFIN = 200
 +PHIG= 4.76
 +Nch = 1e20
++nssshift=100.0
 
 +vthdibl = 0.06
 +SSrolloff = 0.3
