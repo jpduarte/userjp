@@ -1,0 +1,382 @@
+Using: /tools/synopsys/hspice/G-2012.06-ENG1/hspice/linux/hspice inverterv1.sp
+ ****** HSPICE -- G-2012.06-ENG1 32-BIT (Jun 28 2012) RHEL32 ******             
+  Copyright (C) 2012 Synopsys, Inc. All Rights Reserved.                        
+  Unpublished-rights reserved under US copyright laws.
+  This program is protected by law and is subject to the
+  terms and conditions of the license agreement from Synopsys.
+  Use of this program is your acceptance to be bound by the
+  license agreement. HSPICE is the trademark of Synopsys, Inc.
+  Input File: inverterv1.sp                                                     
+  Command line options: inverterv1.sp
+ lic:  
+ lic: FLEXlm: v10.8 
+ lic: USER:   jpduarte             HOSTNAME: bwrcrdsl-3.eecs.berkeley.edu 
+ lic: HOSTID:                      PID:      28927 
+ lic: Using FLEXlm license file: 
+ lic: 1701@sunv40z-1.eecs.berkeley.edu 
+ lic: Checkout 1 hspice 
+ lic: License/Maintenance for hspice will expire on 19-dec-2015/2014.09 
+ lic: 1(in_use)/50(total) FLOATING license(s) on SERVER sunv40z-1.eecs.berkeley.
+ lic:   
+ Init: read install configuration file: /tools/synopsys/hspice/G-2012.06-ENG1/hspice/meta.cfg
+
+
+ --------------------------------------------------------
+|                                                        |
+|          Synopsys Unified Verilog-A (pVA v2.0)         |
+|                                                        |
+|       Machine Name: bwrcrdsl-3.eecs.berkeley.edu       |
+| Copyright (c) 2012 Synopsys Inc., All Rights Reserved. |
+|                                                        |
+ --------------------------------------------------------
+
+libepva built by pvamgr synmake_pva_build  on Mon Jun 11 20:01:00 PDT 2012
+HSP_HOME:   /tools/synopsys/hspice/G-2012.06-ENG1/hspice
+HSP_ARCH:   linux
+HSP_GCC :   /tools/synopsys/hspice/G-2012.06-ENG1/hspice/GNU/amd64/gcc-4.5.2-static/bin/gcc -m32 
+HSP_GCC_VER:   4.5.2
+Working-Dir: /users/jpduarte/research/userjp/ncfet/simulations
+Args:        -p hsp -t spi -f inverterv1.pvadir/pvaHDL.lis -o inverterv1.pvadir 
+
+
+Begin of pVA compiling on Sun Jul 12 18:36:39 2015
+
+Parsing '/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMCMG109.0.0beta2/BSIMCMG/workingcode/bsimcmg.va'
+Parsing include file '/tools/synopsys/hspice/G-2012.06-ENG1/hspice/include/constants.vams'
+Parsing include file '/tools/synopsys/hspice/G-2012.06-ENG1/hspice/include/disciplines.vams'
+Parsing include file '/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMCMG109.0.0beta2/BSIMCMG/workingcode/common_defs.include'
+Parsing include file '/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMCMG109.0.0beta2/BSIMCMG/workingcode/bsimcmg_cfringe.include'
+Parsing include file '/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMCMG109.0.0beta2/BSIMCMG/workingcode/bsimcmg_body.include'
+Parsing include file '/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMCMG109.0.0beta2/BSIMCMG/workingcode/bsimcmg_binning_parameters.include'
+Parsing include file '/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMCMG109.0.0beta2/BSIMCMG/workingcode/bsimcmg_rdsmod.include'
+Parsing include file '/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMCMG109.0.0beta2/BSIMCMG/workingcode/bsimcmg_quasi_static_cv.include'
+
+End of pVA compiling on Sun Jul 12 18:36:39 2015
+
+
+End of build pVA DB on Sun Jul 12 18:36:39 2015
+
+
+inverterv1.pvadir/pvaRTL_linux.so is reused
+
+End of pVA elaboration on Sun Jul 12 18:36:39 2015
+
+ Loading pVA library inverterv1.pvadir/pvaRTL_linux.so...
+1****** HSPICE -- G-2012.06-ENG1 32-BIT (Jun 28 2012) RHEL32 ******             
+ ******  
+ *sample netlist for inverter
+
+  ******  circuit name directory
+ circuit number to circuit name directory
+   number circuitname                     definition         multiplier
+        0 main circuit
+        1 x1.                             bsimcmg(va)        1.00 
+        2 x2.                             bsimcmg(va)        1.00 
+*pvaI* Creating Verilog-A module 'bsimcmg' for X2
+*pvaI* Creating Verilog-A module 'bsimcmg' for X1
+  
+      
+ *****************************************************************
+ ******  option summary
+ ******
+ runlvl  = 3         bypass  = 2         
+  Opening plot unit= 15
+ file=inverterv1.pa0
+
+ **info** dc convergence successful
+ you can increase the efficiency of the
+ operating point calculation by setting dcon= 1
+ in the .option statement
+ ******  
+ *sample netlist for inverter
+
+  ******  dc transfer curves tnom=  25.000 temp=  25.000 *****
+x
+
+        volt    voltage    
+                   x1.d    
+    0.            0.5000   
+  1.0000e-02      0.5000   
+  2.0000e-02      0.5000   
+  3.0000e-02      0.5000   
+  4.0000e-02      0.5000   
+  5.0000e-02      0.5000   
+  6.0000e-02      0.5000   
+  7.0000e-02      0.5000   
+  8.0000e-02      0.4999   
+  9.0000e-02      0.4999   
+    0.10000       0.4998   
+    0.11000       0.4997   
+    0.12000       0.4994   
+    0.13000       0.4989   
+    0.14000       0.4979   
+    0.15000       0.4960   
+    0.16000       0.4918   
+    0.17000       0.4809   
+    0.18000       0.4004   
+    0.19000     3.540e-02  
+    0.20000     1.247e-02  
+    0.21000     5.625e-03  
+    0.22000     2.737e-03  
+    0.23000     1.387e-03  
+    0.24000     7.228e-04  
+    0.25000     3.860e-04  
+    0.26000     2.108e-04  
+    0.27000     1.175e-04  
+    0.28000     6.674e-05  
+    0.29000     3.859e-05  
+    0.30000     2.267e-05  
+    0.31000     1.351e-05  
+    0.32000     8.153e-06  
+    0.33000     4.979e-06  
+    0.34000     3.073e-06  
+    0.35000     1.914e-06  
+    0.36000     1.203e-06  
+    0.37000     7.615e-07  
+    0.38000     4.858e-07  
+    0.39000     3.122e-07  
+    0.40000     2.026e-07  
+    0.41000     1.354e-07  
+    0.42000     8.491e-08  
+    0.43000     5.453e-08  
+    0.44000     3.535e-08  
+    0.45000     2.304e-08  
+    0.46000     1.510e-08  
+    0.47000     9.932e-09  
+    0.48000     6.565e-09  
+    0.49000     4.361e-09  
+    0.50000     2.914e-09  
+y
+-----------------------------------------------
+x
+
+        volt    voltage    
+                   vout    
+    0.            0.5000   
+  1.0000e-02      0.5000   
+  2.0000e-02      0.5000   
+  3.0000e-02      0.5000   
+  4.0000e-02      0.5000   
+  5.0000e-02      0.5000   
+  6.0000e-02      0.5000   
+  7.0000e-02      0.5000   
+  8.0000e-02      0.4999   
+  9.0000e-02      0.4999   
+    0.10000       0.4998   
+    0.11000       0.4997   
+    0.12000       0.4994   
+    0.13000       0.4989   
+    0.14000       0.4979   
+    0.15000       0.4960   
+    0.16000       0.4918   
+    0.17000       0.4809   
+    0.18000       0.4004   
+    0.19000     3.540e-02  
+    0.20000     1.247e-02  
+    0.21000     5.625e-03  
+    0.22000     2.737e-03  
+    0.23000     1.387e-03  
+    0.24000     7.228e-04  
+    0.25000     3.860e-04  
+    0.26000     2.108e-04  
+    0.27000     1.175e-04  
+    0.28000     6.674e-05  
+    0.29000     3.859e-05  
+    0.30000     2.267e-05  
+    0.31000     1.351e-05  
+    0.32000     8.153e-06  
+    0.33000     4.979e-06  
+    0.34000     3.073e-06  
+    0.35000     1.914e-06  
+    0.36000     1.203e-06  
+    0.37000     7.615e-07  
+    0.38000       0.       
+    0.39000       0.       
+    0.40000       0.       
+    0.41000       0.       
+    0.42000       0.       
+    0.43000       0.       
+    0.44000       0.       
+    0.45000       0.       
+    0.46000       0.       
+    0.47000       0.       
+    0.48000       0.       
+    0.49000       0.       
+    0.50000       0.       
+y
+-----------------------------------------------
+x
+
+        volt    current    
+                   x1.d    
+    0.          2.240e-11  
+  1.0000e-02    3.172e-11  
+  2.0000e-02    4.565e-11  
+  3.0000e-02    6.560e-11  
+  4.0000e-02    9.459e-11  
+  5.0000e-02    1.367e-10  
+  6.0000e-02    1.979e-10  
+  7.0000e-02    2.864e-10  
+  8.0000e-02    4.149e-10  
+  9.0000e-02    6.013e-10  
+    0.10000     8.713e-10  
+    0.11000     1.262e-09  
+    0.12000     1.829e-09  
+    0.13000     2.647e-09  
+    0.14000     3.829e-09  
+    0.15000     5.530e-09  
+    0.16000     7.967e-09  
+    0.17000     1.142e-08  
+    0.18000     1.573e-08  
+    0.19000     1.331e-08  
+    0.20000     9.497e-09  
+    0.21000     6.705e-09  
+    0.22000     4.708e-09  
+    0.23000     3.294e-09  
+    0.24000     2.299e-09  
+    0.25000     1.602e-09  
+    0.26000     1.114e-09  
+    0.27000     7.746e-10  
+    0.28000     5.381e-10  
+    0.29000     3.736e-10  
+    0.30000     2.593e-10  
+    0.31000     1.799e-10  
+    0.32000     1.248e-10  
+    0.33000     8.660e-11  
+    0.34000     6.008e-11  
+    0.35000     4.168e-11  
+    0.36000     2.892e-11  
+    0.37000     2.008e-11  
+    0.38000     1.395e-11  
+    0.39000     9.706e-12  
+    0.40000     6.779e-12  
+    0.41000     4.855e-12  
+    0.42000     3.247e-12  
+    0.43000     2.214e-12  
+    0.44000     1.518e-12  
+    0.45000     1.043e-12  
+    0.46000     7.172e-13  
+    0.47000     4.936e-13  
+    0.48000     3.398e-13  
+    0.49000     2.341e-13  
+    0.50000     1.613e-13  
+y
+-----------------------------------------------
+x
+
+        volt               
+                  x1:ids   
+    0.          2.113e-11  
+  1.0000e-02    3.066e-11  
+  2.0000e-02    4.447e-11  
+  3.0000e-02    6.450e-11  
+  4.0000e-02    9.356e-11  
+  5.0000e-02    1.357e-10  
+  6.0000e-02    1.968e-10  
+  7.0000e-02    2.855e-10  
+  8.0000e-02    4.140e-10  
+  9.0000e-02    6.003e-10  
+    0.10000     8.704e-10  
+    0.11000     1.262e-09  
+    0.12000     1.828e-09  
+    0.13000     2.646e-09  
+    0.14000     3.828e-09  
+    0.15000     5.529e-09  
+    0.16000     7.967e-09  
+    0.17000     1.142e-08  
+    0.18000     1.573e-08  
+    0.19000     1.331e-08  
+    0.20000     9.479e-09  
+    0.21000     6.704e-09  
+    0.22000     4.664e-09  
+    0.23000     3.284e-09  
+    0.24000     2.296e-09  
+    0.25000     1.601e-09  
+    0.26000     1.114e-09  
+    0.27000     5.637e-10  
+    0.28000     4.029e-10  
+    0.29000     2.867e-10  
+    0.30000     2.032e-10  
+    0.31000     1.435e-10  
+    0.32000     1.011e-10  
+    0.33000     7.108e-11  
+    0.34000     4.987e-11  
+    0.35000     3.494e-11  
+    0.36000     2.445e-11  
+    0.37000     1.710e-11  
+    0.38000     1.196e-11  
+    0.39000     8.369e-12  
+    0.40000     5.875e-12  
+    0.41000     4.169e-12  
+    0.42000     3.600e-12  
+    0.43000     1.895e-12  
+    0.44000     1.320e-12  
+    0.45000     9.132e-13  
+    0.46000     6.315e-13  
+    0.47000     4.369e-13  
+    0.48000     3.028e-13  
+    0.49000     2.103e-13  
+    0.50000     1.466e-13  
+y
+-----------------------------------------------
+
+          ***** job concluded
+1****** HSPICE -- G-2012.06-ENG1 32-BIT (Jun 28 2012) RHEL32 ******             
+ ******  
+ *sample netlist for inverter
+
+  ******  job statistics summary tnom=  25.000 temp=  25.000 *****
+  
+  
+ ******  Machine Information  ******
+ CPU:
+ model name	: Intel(R) Xeon(R) CPU           E5645  @ 2.40GHz
+ cpu MHz	: 2394.043
+  
+ OS:
+ Linux version 2.6.32-504.3.3.el6.x86_64 (mockbuild@x86-028.build.eng.bos.redhat.com) (gcc version 4.4.7 20120313 (Red Hat 4.4.7-9) (GCC) ) #1 SMP Fri Dec 12 16:05:43 EST 2014
+
+
+  ******  HSPICE Threads Information  ******
+
+  Command Line Threads Count :     1
+  Available CPU Count        :    12
+  Actual Threads Count       :     1
+
+
+  ******  Circuit Statistics  ******
+  # nodes       =      15 # elements   =       5
+  # resistors   =       0 # capacitors =       0 # inductors   =       0
+  # mutual_inds =       0 # vccs       =       0 # vcvs        =       0
+  # cccs        =       0 # ccvs       =       0 # volt_srcs   =       3
+  # curr_srcs   =       0 # diodes     =       0 # bjts        =       0
+  # jfets       =       0 # mosfets    =       0 # U elements  =       0
+  # T elements  =       0 # W elements =       0 # B elements  =       0
+  # S elements  =       0 # P elements =       0 # va device   =       2
+  # vector_srcs =       0 # N elements =       0
+
+
+  ******  Runtime Statistics (seconds)  ******
+
+  analysis           time    # points   tot. iter  conv.iter
+  op point           0.00           1           0
+  dc sweep           0.05          51         339
+  readin             0.08
+  errchk             0.10
+  setup              0.00
+  output             0.00
+
+
+           peak memory used        112.82 megabytes
+           total cpu time            0.24 seconds
+           total elapsed time        0.55 seconds
+           job started at     18:36:39 07/12/2015
+           job ended   at     18:36:39 07/12/2015
+
+
+ lic: Release hspice token(s) 
+ lic: total license checkout elapse time:        0.25(s)
+
+
+pVA concluded on Sun Jul 12 18:36:39 2015
+
