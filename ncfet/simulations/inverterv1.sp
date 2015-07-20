@@ -12,7 +12,8 @@ vdd supply  0 dc=0.5
 vinput vin  0 dc=0.5
 
 * --- inverter ---
-X1 vout vin 0 0 nmos1 L=50e-9 NFIN=1 DEVTYPE=1
+CNEG vin vinaux 0.1e-6
+X1 vout vinaux 0 0 nmos1 L=50e-9 NFIN=1 DEVTYPE=1
 X2 vout vin supply supply pmos1 L=50e-9 NFIN=2 DEVTYPE=0
 
 CLOAD vout 0 .75P

@@ -1,8 +1,8 @@
 * "simulator" "HSPICE" 
 * "version" "G-2012.06-ENG1 32-BIT"
 * "format" "HSP"
-* "rundate" "11:19:16 07/17/2015 "
-* "netlist" "invertertran.sp "
+* "rundate" "12:45:27 07/17/2015 "
+* "netlist" "invertertranncfet.sp "
 * "runtitle" "*sample netlist for inverter"
 * time =    0.            
 * temperature =   25.0000        
@@ -12,5 +12,6 @@
 .nodeset
 + supply =   0.5000        
 + vin =   0.            
-+ vout =   0.5000        
++ vinaux =   0.3297        
++ vout =   0.4559        
 ***   END: Saved Operating Point ***                     
