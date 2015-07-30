@@ -27,7 +27,7 @@ sim1.updateparameter('simulationfolder',rootfolder+'/userjp/ncfet/pythonsimulati
 #define simulation file name
 sim1.updateparameter('simfilename','pythonsimaux')
 #define simulation final results file 
-sim1.updateparameter('simresultfilename','pythonsimauxresultnc2.txt')
+sim1.updateparameter('simresultfilename','pythonsimauxresultnc3.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
