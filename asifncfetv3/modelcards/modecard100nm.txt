@@ -1,0 +1,50 @@
+*model card for Asif 70nm pmos
+
++DEVTYPE=-1
++GEOMOD = 1
++IDSMOD = 1
++RDSMOD = 0
++VTHROMOD = 1
++VTHDIBLMOD = 0
++SSMOD = 0
+
++Lg = 100e-9
++HFIN = 25e-9
++TFIN = 40e-9
++tins = 0.8e-9
++NFIN = 200
++PHIG= 4.6
++Nch = 1e20
+
++MODmudop = 1
++MODmuac = 0
++MODmusr = 0
++MODmurcs = 0
++MODmuc = 0
+
+*parameters for mobility and current saturation
++vsat = 290230.46732
++vsat = 290230.46732
++ul = 812.693143136
+*+lombardi_delta = 0.7e14  
+
++Rs = 10484.5307282
++QMFACTORCV=0.8
+
+*+VTHROFIT = 1
+*+VTHDIBLFIT = 0.5
+*+QMFACTORCV=0.8
+*+lamdafitSS = 1
+
+*+QMFACTORCV = 0.4
+*+Rs=6500
+*+Rd=6500
+*+lombardi_B=9.925e9
+*+lombardi_eta = 2.0546e31
+
+*+vsat= 2.5e5
+*+MODmuc = 0
+*+lombardi_C = 15e3
+*+lombardi_delta = 0.7e14
+*+lombardi_eta = 0.1e30
+*+rcoulomb_s = 0.00001
