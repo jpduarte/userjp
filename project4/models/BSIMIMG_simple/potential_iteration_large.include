@@ -1,0 +1,1824 @@
+//loop implemented in if conditions
+
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+if (flag_loop==0 ) begin
+          q1 = -(phi1-xg1); 
+        qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+                
+        if (qsqrt < 0.0 ) begin   
+            q = sqrt(-qsqrt); 
+            if (q<1.0e-4) begin 
+                qcoth = (1.0-qsqrt/8.0)/(0.5-qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((0.5-qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq);  
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = -0.5/q; 
+                qcoth = q*cot(q/2.0); 
+                dqcothqdqsqrt = (-qsqrt)*(-pow(cot(q/2.0),2) - 1.0)/(4.0*qsqrt) + q*cot(q/2.0)/(2.0*qsqrt); 
+                        
+                sinhqsq = -pow(sin(q/2.0),2); 
+                dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); 
+            end 
+        end else begin 
+            q     = sqrt(qsqrt); 
+            if(q<1.0e-4) begin 
+                qcoth = (1.0+qsqrt/8.0)/(0.5+qsqrt/24.0); 
+                dqcothqdqsqrt = 3.0/qsqrt - 24.0*(qsqrt/8.0 + 1.0)/qsqrt*qsqrt; 
+                        
+                qsqoversinhqsq = 1.0/pow((1.0/2.0+qsqrt/24.0),2.0); 
+                logsinhqsq = lln(qsqoversinhqsq); 
+                dqsqoversinhqsq = -1152.0/pow(qsqrt,3.0); 
+                dlogsinhqsqdqsqrt = dqsqoversinhqsq/(qsqoversinhqsq); 
+            end else begin 
+                dq = 0.5/q; 
+                sinhqsq = pow(sinh(q/2.0),2.0); 
+                logsinhqsq = lln(qsqrt/sinhqsq); 
+                dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; 
+                dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; 
+                       
+                qcoth = q*coth(q/2.0); 
+                dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + coth(q/2.0)/(2.0*q); 
+            end 
+        end 
+                
+        q2 = xg2-xg1+q1+2.0*lln(k1*q1+qcoth)-logsinhqsq; 
+                
+        aaux = -A0*exp(xg1-q1); 
+        baux = (k1*q1)*(k1*q1);  
+        caux = (k1*q1)*(k2*q2); 
+        daux = (k1*q1)*qcoth; 
+        eaux = (k2*q2)*qcoth;  
+                
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phi1); 
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt; 
+        dqcoth = dqcothqdqsqrt*dqsqrt;  
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  
+                
+        daaux = aaux; 
+        dbaux = (k1*q1)*2.0*(-k1); 
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; 
+               
+        f = aaux+baux+caux+daux+eaux;  
+        df = daaux+dbaux+dcaux+ddaux+deaux; 
+        phi2 = phi1-2*lln(k1*q1+qcoth)+logsinhqsq;
+        delta = -f/df;
+
+        if( abs(f) > abscri) begin 
+            delta = 0.5*(delta+deltanr*(PHISsat-phi1)-sqrt((delta-deltanr*(PHISsat-phi1))*(delta-deltanr*(PHISsat-phi1))+factordelta));
+            //delta =connectingfx3(delta,deltanr*(PHISsat-phi1),factordelta);
+            deltaold =  delta;         
+            phi1 = phi1+delta;            
+        end else begin
+            flag_loop = 1;       
+        end
+
+end 
+end 
+end 
+end 
+end 
+
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end
+
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end

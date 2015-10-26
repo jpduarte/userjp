@@ -21,73 +21,45 @@ sim1 = hspicepython.hspicepython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
 sim1.updateparameter('modelpath','/users/jpduarte/research/BSIMCMG/workingcode/bsimcmg.va')
 #add path to model card of device under study
-sim1.updateparameter('modelcardpath',rootfolder+'/userjp/ncfet/modelcards/modelcard2.nmos')
+#sim1.updateparameter('modelcardpath','/users/jpduarte/research/cmdp/userjp/project4/modelcards/leapmodelcard.nmos')
+sim1.updateparameter('modelcardpath','/users/jpduarte/research/BSIMCMG/benchmark_test/modelcard.nmos')
 #add path to folder which will contain simulation files
-sim1.updateparameter('simulationfolder',rootfolder+'/userjp/ncfet/hspicesimulations/idvg/')
+sim1.updateparameter('simulationfolder',rootfolder+'/userjp/project4/hspicesimulations/idvg/')
 #define simulation file name
 sim1.updateparameter('simfilename','hspicesimaux')
 #define simulation final results file 
 sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
 #include node names in the order defined in verilog code
-sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
+sim1.updateparameter('nodes',['Vd', 'Vgf', 'Vs', 'Vgb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[np.linspace(0.02,0.5,2), np.linspace(0.0,1,25), [0], [0]])
+sim1.updateparameter('dcbiases',[ np.linspace(0.5,1,10), np.linspace(-1,1,100), [0],  np.linspace(-1,1,11)])
+#sim1.updateparameter('dcbiases',[np.linspace(0.1,1,10), np.linspace(1.5,1.5,1), [0], [0]])
+#sim1.updateparameter('dcbiases',[np.linspace(-1,1,100), np.linspace(1,1,1), [0], [2]])
+#[np.linspace(0.2,0.2,1), np.linspace(0,2,100), [0], [2]])
+#
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['L'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[50-9]])
-#add variables to save
-sim1.updateparameter('vartosave',['Ids','Qg','E_FE','V_FE'])
+sim1.updateparameter('deviceparametervalue',[[1000e-9]])
+#add variables to save  
+sim1.updateparameter('vartosave',['IDS'])#no ok: CBGSI ,'phifdnew','vbgs'
 
 ###########################################################################
-##################Simulation Run###########################################
+##################Simulation Excecution####################################
 ###########################################################################
 sim1.runsim()
-#sim1.updateparameter('simresultfilename','hspicesimauxresultnc.txt')
+Vx = 'Vgf'
+
 #plot
 P1 = plotgeneral.plotgeneral()
 pathandfile = sim1.simulationfolder + sim1.simresultfilename
-P1.updateparameter('symbol','o')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','Ids',1)
-P1.updateparameter('ylogflag',1)
-P1.plotfiledata(pathandfile,'Vg','Ids',2)
-
+#plot
 P1.updateparameter('ylogflag',0)
-P1.plotfiledata(pathandfile,'Vg','Qg',3)
-
-'''
-
-
-P1.updateparameter('ylogflag',0)
-P1.plotfiledata(pathandfile,'Vg','Qg',3)
-
-P1.plotfiledata(pathandfile,'Vg','E_FE',4)
-
-P1.plotfiledata(pathandfile,'Qg','E_FE',5)
-
-P1.plotfiledata(pathandfile,'Vg','V_FE',6)
-
-P1.plotfiledata(pathandfile,'Qg','V_FE',7)
-
-
-sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
-pathandfile = sim1.simulationfolder + sim1.simresultfilename
 P1.updateparameter('symbol','-')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','Ids',1)
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],1)
 P1.updateparameter('ylogflag',1)
-P1.plotfiledata(pathandfile,'Vg','Ids',2)
-
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],2)
 P1.updateparameter('ylogflag',0)
-P1.plotfiledata(pathandfile,'Vg','Qg',3)
-
-P1.plotfiledata(pathandfile,'Vg','E_FE',4)
-
-P1.plotfiledata(pathandfile,'Qg','E_FE',5)
-
-P1.plotfiledata(pathandfile,'Vg','V_FE',6)
-
-P1.plotfiledata(pathandfile,'Qg','V_FE',7)'''
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[1],3)
 
 plt.show() 
