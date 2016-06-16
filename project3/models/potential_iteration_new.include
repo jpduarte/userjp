@@ -1,0 +1,130 @@
+// ********************************************************
+// **** BSIM-IMG 102.7.0beta  ****/
+// *  BSIM Independent Multi-Gate Model (Verilog-A)
+// *  four terminal device (d, fg, s, bg)
+// ********************************************************
+//
+// ********************************************************
+// * Copyright 2015 Regents of the University of California.
+// * All rights reserved.
+// *
+// * Project Director: Prof. Chenming Hu.
+// * Authors: Chung-Hsun Lin, Mohan Dunga, Darsen Lu,
+// *          Sriramkumar V., Shijing Yao,
+// *          Srivatsava Jandhyala, Navid Paydavosi,
+// *          Yogesh Singh Chauhan, Sourabh Khandelwal,
+// *          Pragya Kushwaha, Juan Pablo Duarte,
+// *          Ali Niknejad, Chenming Hu
+// ********************************************************
+
+// ********************************************************
+// ********************************************************
+// *   NONDISCLOSURE STATEMENT
+// Software is distributed as is, completely without warranty or service
+// support. The University of California and its employees are not liable
+// for the condition or performance of the software.
+// The University of California owns the copyright and grants users a perpetual,
+// irrevocable, worldwide, non-exclusive, royalty-free license with
+// respect to the software as set forth below.
+// The University of California hereby disclaims all implied warranties.
+// The University of California grants the users the right to modify, copy,
+// and redistribute the software and documentation, both within the user's
+// organization and externally, subject to the following restrictions
+// 1. The users agree not to charge for the University of California code
+// itself but may charge for additions, extensions, or support.
+// 2. In any product based on the software, the users agree to acknowledge
+// the University of California that developed the software. This
+// acknowledgment shall appear in the product documentation.
+// 3. The users agree to obey all U.S. Government restrictions governing
+// redistribution or export of the software.
+// 4. The users agree to reproduce any copyright notice which appears on
+// the software on any copy or modification of such made available
+// to others
+// Agreed to on __April, 2015_________________
+// By: ___University of California, Berkeley____
+//     ___Chenming Hu_____________________
+//     ___Professor in Graduate School _______
+// ********************************************************
+// ********************************************************
+
+    `bsimimg_sp_f_new(PHISsat,0,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,ddf,phi2,phi1,qicore,qcoth,sinhqsq)
+    qsqrt = k1*k1*q1*q1-A0*exp(phi1);
+    phi2 = phibguess;
+    q2 = xg2-phibguess;//first q2 is coming from guess
+    phi1aux1 = phi1*Vtm;
+    deltaaux1 = -f/df;
+    q1 = xg1-phi1;
+    qsqrt1 = k1*k1*q1*q1-A0*exp(phi1); 
+    f1 = f;
+    df1 = df;
+    df1aux = 0;//ddx(f,phi1);
+    qicore1=k1*q1+k2*q2;
+
+    //second iteration:
+    qsqrtlimit=-((2.0*`M_PI)*(2.0*`M_PI))/2.0;
+    if(qsqrt < qsqrtlimit) begin //strong inversion condition
+      T0 = 1.0+(1.0/6.0-1.0/(`M_PI*`M_PI))*(k1*q1+k2*q2);
+      T1 = 4.0*(`M_PI*`M_PI)+k1*q1*k2*q2+2.0*(1.0+(`M_PI*`M_PI)/3.0)*(k1*q1+k2*q2);
+      T2 = 4.0*(`M_PI*`M_PI)*k1*q1*k2*q2+(8.0*(`M_PI*`M_PI))*(k1*q1+k2*q2);
+      qsqrt = (sqrt(T1*T1-4.0*T0*T2)-T1)/(2.0*T0);
+      delta = -(q1-xg1+ln((k1*k1*q1*q1-qsqrt)/A0))/(1.0+2.0*k1*k1*q1/(k1*k1*q1*q1-qsqrt));
+      phi1 = phi1-delta;
+      f = 0;
+    end else begin
+      `bsimimg_sp_f_new(PHISsat,0,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,ddf,phi2,phi1,qicore,qcoth,sinhqsq)
+       qsqrt = k1*k1*q1*q1-A0*exp(phi1);
+       delta = -f/df;
+    end
+    q1 = xg1-phi1;
+    phi1aux2 = phi1*Vtm;
+    deltaaux2 = delta;
+    q1 = xg1-phi1;
+    qsqrt2 = k1*k1*q1*q1-A0*exp(phi1); 
+    f2 = f;
+    
+    q2 = xg2-phi2;
+    qicore2=k1*q1+k2*q2;
+    
+    //third iteration:
+    if(qsqrt < qsqrtlimit) begin //strong inversion condition
+      T0 = 1.0+(1.0/6.0-1.0/(`M_PI*`M_PI))*(k1*q1+k2*q2);
+      T1 = 4.0*(`M_PI*`M_PI)+k1*q1*k2*q2+2.0*(1.0+(`M_PI*`M_PI)/3.0)*(k1*q1+k2*q2);
+      T2 = 4.0*(`M_PI*`M_PI)*k1*q1*k2*q2+(8.0*(`M_PI*`M_PI))*(k1*q1+k2*q2);
+      qsqrt = (sqrt(T1*T1-4.0*T0*T2)-T1)/(2.0*T0);
+      delta = -(q1-xg1+ln((k1*k1*q1*q1-qsqrt)/A0))/(1.0+2.0*k1*k1*q1/(k1*k1*q1*q1-qsqrt));
+      phi1 = phi1-delta;
+      f = 0;
+    end else begin
+      `bsimimg_sp_f_new(PHISsat,0,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,ddf,phi2,phi1,qicore,qcoth,sinhqsq)
+      delta = -f/df;
+    end
+    phi1aux3 = phi1*Vtm;
+    deltaaux3 = delta;
+    q1 = xg1-phi1;
+    qsqrt3 = k1*k1*q1*q1-A0*exp(phi1); 
+    f3= f;
+    q2 = xg2-phi2;
+    qicore3=k1*q1+k2*q2;    
+    //4th iteration:
+    `bsimimg_sp_f_new(PHISsat,1,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,ddf,phi2,phi1,qicore,qcoth,sinhqsq)
+    phi1aux4 = phi1*Vtm;
+    deltaaux4 = -f/df;
+    q1 = xg1-phi1;
+    qsqrt4 = k1*k1*q1*q1-A0*exp(phi1);   
+    f4 = f;  
+    q2 = xg2-phi2;
+    qicore4=k1*q1+k2*q2;    
+    //5th iteration:
+    `bsimimg_sp_f_new(PHISsat,1,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,ddf,phi2,phi1,qicore,qcoth,sinhqsq)
+    q1 = xg1-phi1;
+    q2 = xg2-phi2;
+    qsqrt = k1*k1*q1*q1-A0*exp(phi1); 
+    qicore=k1*q1+k2*q2;
+    phi1aux5 = phi1*Vtm;
+    deltaaux5 = -f/df;
+    q1 = xg1-phi1;
+    qsqrt5 = k1*k1*q1*q1-A0*exp(phi1); 
+    f5 = f;   
+    q2 = xg2-phi2;
+    qicore5=k1*q1+k2*q2;     
+    //A0*exp(phi1)*(k1*q1-qcoth)///(1.0-(qsqrt/sinhqsq)*(exp(-phi1)/A0));//(k1*q1-qcoth);///(1.0-(qsqrt/sinhqsq)*(exp(-phi1)/A0));//A0*exp(phi1)/(k1*q1-qcoth);//k1*q1+k2*q2;   

@@ -1,0 +1,10 @@
+//saturation potential calculation        
+        
+        q1 = -(PHISsat-xg1g); 
+        g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;
+        dg1 = k1*k1*(2.0*PHISsat - 2.0*xg1g)/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)) - 1.0; 
+        dg2 =-pow(k1,4.0)*pow(2.0*PHISsat - 2.0*xg1g,2.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2) + 2.0*k1*k1/(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)); 
+        dg3 = 2.0*pow(k1,6.0)*pow(2.0*PHISsat - 2.0*xg1g,3.0)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),3.0) - 2.0*pow(k1,4.0)*(2.0*PHISsat - 2.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0) - pow(k1,4.0)*(8.0*PHISsat - 8.0*xg1g)/pow(k1*k1*pow(-PHISsat + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0); 
+        deltaPHISsat = (g/dg1)*(1.0+g*dg2/(2.0*pow(dg1,2.0))+pow(g,2.0)*(3.0*pow(dg2,2.0)-dg1*dg3)/(6.0*pow(dg1,4.0)));
+        PHISsat = PHISsat - deltaPHISsat;
+        g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat;

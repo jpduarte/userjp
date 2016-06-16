@@ -1,0 +1,88 @@
+//loop implemented in if conditions
+
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(1,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(1,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(1,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(1,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+if (flag_loop==0 ) begin
+  `bsimimg_sp_f(0,abscri,deltanr,factordelta,PHISsat,phi1,xg1,k1,k2,xg1,xg2,A0,f,df,phi2,phi1,flag_loop)
+
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end
+
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end
+
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end 
+end

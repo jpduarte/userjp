@@ -1,0 +1,181 @@
+// ********************************************************
+// **** BSIM-IMG 103.0.0beta released on July 20, 2015 by Sourabh Khandelwal ****/
+// *  BSIM Independent Multi-Gate Model (Verilog-A)
+// *  four terminal device (d, fg, s, bg)
+// ********************************************************
+//
+// ********************************************************
+// * Copyright 2015 Regents of the University of California.
+// * All rights reserved.
+// *
+// * Project Director: Prof. Chenming Hu.
+// * Authors: Chung-Hsun Lin, Mohan Dunga, Darsen Lu,
+// *          Sriramkumar V., Shijing Yao,
+// *          Srivatsava Jandhyala, Navid Paydavosi,
+// *          Yogesh Singh Chauhan, Sourabh Khandelwal,
+// *          Pragya Kushwaha, Juan Pablo Duarte,
+// *          Ali Niknejad, Chenming Hu
+// ********************************************************
+
+// ********************************************************
+// ********************************************************
+// *   NONDISCLOSURE STATEMENT
+// Software is distributed as is, completely without warranty or service
+// support. The University of California and its employees are not liable
+// for the condition or performance of the software.
+// The University of California owns the copyright and grants users a perpetual,
+// irrevocable, worldwide, non-exclusive, royalty-free license with
+// respect to the software as set forth below.
+// The University of California hereby disclaims all implied warranties.
+// The University of California grants the users the right to modify, copy,
+// and redistribute the software and documentation, both within the user's
+// organization and externally, subject to the following restrictions
+// 1. The users agree not to charge for the University of California code
+// itself but may charge for additions, extensions, or support.
+// 2. In any product based on the software, the users agree to acknowledge
+// the University of California that developed the software. This
+// acknowledgment shall appear in the product documentation.
+// 3. The users agree to obey all U.S. Government restrictions governing
+// redistribution or export of the software.
+// 4. The users agree to reproduce any copyright notice which appears on
+// the software on any copy or modification of such made available
+// to others
+// Agreed to on __July, 2015_________________
+// By: ___University of California, Berkeley____
+//     ___Chenming Hu_____________________
+//     ___Professor in Graduate School _______
+// ********************************************************
+// ********************************************************
+
+// new core model
+`define bsimimg_sp_guess(block_name,TSI,epsratio,EOT1,EOT2,xg1,xg2,nVtm,PHISsat,phifguessout_new,phibguessout_new) \
+begin : block_name \
+    real deltax, x1sat, x2sat, keq, x1wi0, x2wi0, x10, x20, x1wi, x2wi, factorln ; \
+    factorln = 3.0; \
+    deltax = ln((1.0+k1)/(1.0+k2)); \
+    x1sat=PHISsat; \
+    x2sat=PHISsat; \
+    /*x1sat=ln(4.0*(k1+k2/(1.0+k2))/A0)+ln((deltax/2.0)/(tanh(deltax/2.0)))+3.0;*/\
+    /*x2sat=ln(4.0*(k2+k1/(1.0+k1))/A0)+ln((deltax/2.0)/(tanh(deltax/2.0)))+3.0;*/\
+    keq=1.0/(1.0+1.0/k1+1.0/k2); \
+    x1wi0 = xg1+(keq/k1)*(xg2-xg1); \
+    x2wi0 = xg2+(keq/k2)*(xg1-xg2); \
+    x10 = x1wi0-factorln*ln(1.0+exp((x1wi0-x1sat)/factorln)); \
+    x20 = x2wi0-factorln*ln(1.0+exp((x2wi0-x2sat)/factorln)); \
+    x1wi = (x20+k1*xg1)/(1.0+k1); \
+    x2wi = (x10+k2*xg2)/(1.0+k2); \
+    phifguessout_new = x1wi-factorln*ln(1.0+exp((x1wi-x1sat)/factorln)); \
+    phibguessout_new = x2wi-factorln*ln(1.0+exp((x2wi-x2sat)/factorln)); \
+end
+
+`define bsimimg_sp_phissat(block_name,phi1,k1,xg1g,A0,g,dg1,dg2,dg3,PHISsat) \
+begin : block_name \
+q1 = -(phi1-xg1g); \
+g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-phi1; \
+dg1 = k1*k1*(2.0*phi1 - 2.0*xg1g)/(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI)) - 1.0;  \
+dg2 =-pow(k1,4.0)*pow(2.0*phi1 - 2.0*xg1g,2.0)/pow(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2) + 2.0*k1*k1/(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI));  \
+dg3 = 2.0*pow(k1,6.0)*pow(2.0*phi1 - 2.0*xg1g,3.0)/pow(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),3.0) - 2.0*pow(k1,4.0)*(2.0*phi1 - 2.0*xg1g)/pow(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0) - pow(k1,4.0)*(8.0*phi1 - 8.0*xg1g)/pow(k1*k1*pow(-phi1 + xg1g,2.0) + 4.0*(`M_PI)*(`M_PI),2.0);  \
+deltaPHISsat = (g/dg1)*(1.0+g*dg2/(2.0*pow(dg1,2.0))+pow(g,2.0)*(3.0*pow(dg2,2.0)-dg1*dg3)/(6.0*pow(dg1,4.0))); \
+PHISsat = phi1 - deltaPHISsat; \
+g = ln((k1*k1*q1*q1+(2.0*`M_PI)*(2.0*`M_PI))/A0)-PHISsat; \
+end
+
+`define bsimimg_sp_f_new(PHISsat,newtonflag,phiin,xg1,k1,k2,xg1,xg2,A0,f,df,ddf,phi2,phiout,qicore,qcoth,sinhqsq)  \
+begin : surfpot \
+    real qcoth,ddsinhqsq,ddq;\
+    q1 = -(phiin-xg1); \
+    qsqrt = k1*k1*q1*q1-A0*exp(phiin);\
+            \
+    if (qsqrt < 0.0 ) begin   \
+        q = sqrt(-qsqrt); \
+            dq = -0.5/q; \
+            ddq = 0.25/(qsqrt*q); \
+            qcoth = q*(1.0/tan(q/2.0)); \
+            dqcothqdqsqrt = (-qsqrt)*(-pow((1.0/tan(q/2.0)),2) - 1.0)/(4.0*qsqrt) + q*(1.0/tan(q/2.0))/(2.0*qsqrt); \
+            \
+            sinhqsq = -pow(sin(q/2.0),2); \
+            dsinhqsq = -sin(q/2.0)*cos(q/2.0)*dq; \
+            logsinhqsq = ln(abs(qsqrt/sinhqsq)); \
+            dlogsinhqsqdqsqrt = 1.0/(qsqrt)-dsinhqsq/(sinhqsq); \
+            ddsinhqsq = (sin(q/2.0)*sin(q/2.0)/2.0 - cos(q/2.0)*cos(q/2.0)/2.0)*dq*dq+(-sin(q/2.0)*cos(q/2.0))*ddq;\
+            T0 = -1.0/(qsqrt*qsqrt);\
+            T1 = -ddsinhqsq/(sinhqsq);\
+            T2 = +(dsinhqsq/(sinhqsq))*(dsinhqsq/(sinhqsq));\
+            ddlogsinhqsqdqsqrt =   T0+T1+T2;\
+            ddqcothqdqsqrt = (-qsqrt)*(-pow(1.0/tan(sqrt(-qsqrt)/2.0),2.0) - 1.0)/(8.0*qsqrt*qsqrt) + qcoth*(-pow(1.0/tan(sqrt(-qsqrt)/2.0),2.0) - 1.0)/(8.0*qsqrt) - qcoth/(4.0*qsqrt*qsqrt);\
+    end else begin \
+        q     = sqrt(qsqrt); \
+            dq = 0.5/q; \
+            sinhqsq = pow(sinh(q/2.0),2.0); \
+            logsinhqsq = ln(abs(qsqrt/sinhqsq )); \
+            dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq; \
+            dlogsinhqsqdqsqrt = 1.0/qsqrt -dsinhqsq/sinhqsq; \
+            \
+            qcoth = q*(1.0/tanh(q/2.0)); \
+            dqcothqdqsqrt = -1.0/(4.0*pow(sinh(q/2.0),2.0)) + (1.0/tanh(q/2.0))/(2.0*q); \
+            dsinhqsq =sinh(q/2.0)*cosh(q/2.0)*dq ;\
+            T0 = (-1.0/(8.0*pow(sinh(q/2.0),2.0)) + 3.0*pow(cosh(q/2.0),2.0)/(8.0*pow(sinh(q/2.0),4.0)) - 3.0*cosh(q/2.0)/(4.0*q*pow(sinh(q/2.0),3.0)))*pow(sinh(q/2.0),2.0)/qsqrt;\
+            T1 = - (-pow(sinh(q/2.0),2.0)*q*cosh(q/2.0)/(2.0*pow(sinh(q/2.0),3.0)) + 1.0)/(qsqrt*qsqrt);\
+            T2 = +(-q*cosh(q/2.0)/(2.0*pow(sinh(q/2.0),3.0)) + pow(sinh(q/2.0),-2.0))*sinh(q/2.0)*cosh(q/2.0)/(2.0*pow(q,3.0));\
+            ddlogsinhqsqdqsqrt =   T0+T1+T2;\
+            ddqcothqdqsqrt = (-q*pow(1.0/sinh(q/2.0),2.0) + 1.0/tanh(q/2.0) *(-2.0 + qsqrt*pow(1.0/sinh(q/2.0),2.0)))/(8.0*q*q*q);\
+    end \
+        \
+    q2 = xg2-xg1+q1+2.0*ln(abs(k1*q1+qcoth))-logsinhqsq; \
+    \
+        aaux = -A0*exp(xg1-q1);\
+        baux = (k1*q1)*(k1*q1);\
+        caux = (k1*q1)*(k2*q2);\
+        daux = (k1*q1)*qcoth; \
+        eaux = (k2*q2)*qcoth;  \
+                \
+        dqsqrt = -2.0*k1*k1*q1-A0*exp(phiin); \
+        dlogsinhqsq = dlogsinhqsqdqsqrt*dqsqrt;\
+        dqcoth = dqcothqdqsqrt*dqsqrt;  \
+        dq2 = -1.0+2.0*((-k1+dqcoth)/(k1*q1+qcoth))-dlogsinhqsq;  \
+                \
+        daaux = aaux; \
+        dbaux = (k1*q1)*2.0*(-k1); \
+        dcaux = (k1*(-1.0))*(k2*q2)+(k1*q1)*k2*dq2;  \
+        ddaux = (k1*(-1.0))*qcoth+(k1*q1)*dqcoth;  \
+        deaux = (k2*dq2)*qcoth+(k2*q2)*dqcoth; \
+               \
+                 ddqsqrt = 2.0*k1*k1-A0*exp(phiin);\
+  ddlogsinhqsq = ddlogsinhqsqdqsqrt*dqsqrt*dqsqrt+dlogsinhqsqdqsqrt*ddqsqrt;\
+  ddqcoth = ddqcothqdqsqrt*dqsqrt*dqsqrt+dqcothqdqsqrt*ddqsqrt;\
+  ddq2 = 2.0*((ddqcoth)/(k1*q1+qcoth)-pow(((-k1+dqcoth)/(k1*q1+qcoth)),2.0))-ddlogsinhqsq;\
+  \
+  ddaaux = aaux;\
+  ddbaux = 2.0*(k1)*k1;\
+  ddcaux = (k1*(-1.0))*(k2*dq2)+(k1*(-1.0))*k2*dq2+(k1*q1)*k2*ddq2;\
+  dddaux = (k1*(-2.0))*dqcoth+(k1*q1)*ddqcoth;\
+  ddeaux = (k2*ddq2)*qcoth+2.0*(k2*dq2)*dqcoth +(k2*q2)*ddqcoth;\
+  \
+        f = aaux+baux+caux+daux+eaux;  \
+        F = f;\
+        df = daaux+dbaux+dcaux+ddaux+deaux; \
+        ddf = ddaaux+ddbaux+ddcaux+dddaux+ddeaux;\
+        if (newtonflag < 1 ) begin   \
+        delta = -f/df;\
+        end else begin \
+          delta = -f/(df-(f*ddf/(2.0*df)));\
+        end\
+        phiout = phiin+delta;\
+    /*This part is to calculate phi2 updated based on phi1*/\
+    q1 = -(phiout-xg1); \
+    qsqrt = k1*k1*q1*q1-A0*exp(phiout);\
+            \
+    if (qsqrt < 0.0 ) begin   \
+        q = sqrt(-qsqrt); \
+            qcoth = q*(1.0/tan(q/2.0)); \
+            sinhqsq = -pow(sin(q/2.0),2); \
+            logsinhqsq = ln(abs(qsqrt/sinhqsq )); \
+    end else begin \
+        q     = sqrt(qsqrt); \
+            sinhqsq = pow(sinh(q/2.0),2.0); \
+            logsinhqsq = ln(abs(qsqrt/sinhqsq)); \
+            qcoth = q*(1.0/tanh(q/2.0)); \
+    end \
+    phi2 = phiout-2.0*ln(abs(k1*q1+qcoth))+logsinhqsq;\
+    qicore = -(k1*q1-qcoth)/(1.0-(qsqrt/sinhqsq)*(exp(q1-xg1)/A0));\
+end

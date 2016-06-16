@@ -1,0 +1,11 @@
+*model card ufcm
++Lg=9.12e-007
+***********************
+* Process
+***********************
++ PHIG = 4.36
++ DELVFBACC = 0.01
++ HFIN = 3.3e-8
++ TFIN = 6e-9
++ EOT = 1.36e-9
++ NFIN = 52

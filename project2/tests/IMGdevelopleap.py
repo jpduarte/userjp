@@ -19,10 +19,10 @@ import matplotlib.pyplot as plt
 #creates hspice python class
 sim1 = hspicepython.hspicepython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
-sim1.updateparameter('modelpath','/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMIMG/code/bsimimg.va')
+sim1.updateparameter('modelpath','/users/jpduarte/research/BSIMIMG/code/bsimimg.va')
 #add path to model card of device under study
 #sim1.updateparameter('modelcardpath','/users/jpduarte/research/cmdp/userjp/project2/modelcards/leapmodelcard.nmos')
-sim1.updateparameter('modelcardpath','/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMIMG/benchmark_tests/modelcard2.nmos')
+sim1.updateparameter('modelcardpath',rootfolder+'/userjp/project2/modelcards/leapmodelcard.nmos')
 #add path to folder which will contain simulation files
 sim1.updateparameter('simulationfolder',rootfolder+'/userjp/project2/hspicesimulations/idvg/')
 #define simulation file name
@@ -32,7 +32,7 @@ sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vgf', 'Vs', 'Vgb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[ np.linspace(0.05,1,11), np.linspace(0,2,100), [0], [0]])
+sim1.updateparameter('dcbiases',[ np.linspace(0.5,1,10), np.linspace(-2,2,100), [0],  np.linspace(-2,2,11)])
 #sim1.updateparameter('dcbiases',[np.linspace(0.1,1,10), np.linspace(1.5,1.5,1), [0], [0]])
 #sim1.updateparameter('dcbiases',[np.linspace(-1,1,100), np.linspace(1,1,1), [0], [2]])
 #[np.linspace(0.2,0.2,1), np.linspace(0,2,100), [0], [2]])
@@ -43,7 +43,7 @@ sim1.updateparameter('deviceparameter',['L'])
 sim1.updateparameter('deviceparametervalue',[[1000e-9]])
 #add variables to save  
 #sim1.updateparameter('vartosave',['CFGFGI','CBGFGI','CDFGI','CSFGI']) #ok
-sim1.updateparameter('vartosave',['IDS','phidguesss','phifdnew','vbgs'])#no ok: CBGSI
+sim1.updateparameter('vartosave',['IDS','QFG'])#no ok: CBGSI ,'phifdnew','vbgs'
 #sim1.updateparameter('vartosave',['CDDI','CDFGI','CDSI','CDBGI']) #ok
 #sim1.updateparameter('vartosave',['CFGDI','CFGFGI','CFGSI','CFGBGI']) # no ok: CFGDI
 #sim1.updateparameter('vartosave',['CBGDI','CBGFGI','CBGSI','CBGBGI']) #no ok: CBGSI
@@ -69,9 +69,10 @@ P1.updateparameter('ylogflag',1)
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],2)
 P1.updateparameter('ylogflag',0)
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[1],3)
-P1.updateparameter('symbol','--')
+'''P1.updateparameter('symbol','--')
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[2],3)
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[3],5)
+'''
 
 """
 ############################################################################
