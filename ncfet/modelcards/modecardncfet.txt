@@ -1,8 +1,10 @@
 *model card ufcm
-+Lg=1e-9
++Lg=1000e-9
 +DEVTYPE= 1
 +GEOMOD = 1
 +IDSMOD = 0
++countRmodel=0
++NCFETMOD=1
 
 +MODmudop = 1
 +MODmuac = 0
