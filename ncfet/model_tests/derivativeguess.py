@@ -8,6 +8,7 @@ vth_N_Sub = Symbol('vth_N_Sub')
 nss = Symbol('nss')
 A0 = Symbol('A0')
 vt = Symbol('vt')
+qextra = Symbol('qextra')
 
 
 
@@ -16,8 +17,8 @@ Vov         = (Vg_local_N-vfe-vth_N_Sub)*0.5/nss
 qmaux      = exp((Vg_local_N-vfe-vth_N_Sub)*0.5/nss)
 f =  qm   - 2.0*(1.0-sqrt(1.0+(log(1.0+qmaux))**2.0))
 
-df = f.diff(qm)
+#df = f.diff(qm)
 
-
-print (df)
+a = ((qm+qextra)*(qm+qextra)*(qm+qextra))
+print (a.expand())
 
