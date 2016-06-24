@@ -32,7 +32,7 @@ sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vgf', 'Vs', 'Vgb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[ np.linspace(0,0,1),np.arange(-1.5,1.5,0.0001), [0],  np.linspace(-2,2,2)]) #-3.8, 3.8
+sim1.updateparameter('dcbiases',[   np.linspace(0.05,3,2),np.arange(-0,5,0.001), [0],  np.linspace(-3,3,3)]) #-3.8, 3.8
 #sim1.updateparameter('dcbiases',[np.linspace(0.1,1,10), np.linspace(1.5,1.5,1), [0], [0]])
 #sim1.updateparameter('dcbiases',[np.linspace(-1,1,100), np.linspace(1,1,1), [0], [2]])
 #[np.linspace(0.2,0.2,1), np.linspace(0,2,100), [0], [2]])
@@ -42,13 +42,14 @@ sim1.updateparameter('deviceparameter',['L'])
 #device parameter values for simulation
 sim1.updateparameter('deviceparametervalue',[[1000e-9]]) #TODO: fix parameter sweep, it is not working, seems it must be declare in the device part
 #add variables to save
-sim1.updateparameter('vartosave',['IDS','qicores','qicored','ids0','qfronts','qbacks','CFGDI','CFGSI'])#no ok: CBGSI ,'phifdnew','vbgs'
-#sim1.updateparameter('vartosave',['qsqrtaux1s','qsqrtaux2s','qsqrtaux3s','qsqrtaux4s',])#no ok: CBGSI ,'phifdnew','vbgs'
+sim1.updateparameter('vartosave',['IDS'])#no ok: CBGSI ,'phifdnew','vbgs' ,'qicores','qicored','ids0','qfronts','qbacks','CFGDI','CFGSI','GM','ids0','Vdseff','vds'
+#sim1.updateparameter('vartosave',['qsqrtaux1s','qsqrtaux2s','qsqrtaux3s','qsqrtaux4s',])#no ok: CBGSI ,'phifdnew','vbgs' ,'qfronts','qbacks','CFGFGI','qicores'
 ###########################################################################
 ##################Simulation Excecution####################################
 ###########################################################################
 sim1.runsim()
 Vx = 'Vgf'
+
 
 #plot
 P1 = plotgeneral.plotgeneral()
@@ -61,6 +62,22 @@ P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],1)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('symbol','-')
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],2)
+'''
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[3],3)
+
+P1.updateparameter('ylogflag',1)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[4],4)
+
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[1],3)
+
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[2],4)
 
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('symbol','-')
@@ -84,6 +101,33 @@ P1.plotfiledata(pathandfile,Vx,sim1.vartosave[6],6)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','-')
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[7],7)
+
+
+P1.updateparameter('ylogflag',1)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[8],8)
+
+#plt.savefig('gm_log.png', bbox_inches='tight')
+
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[8],9)
+
+#plt.savefig('gm_lin.png', bbox_inches='tight')
+
+
+P1.updateparameter('ylogflag',1)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[9],10)
+
+
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[10],11)
+
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[11],12)'''
 plt.show()
 
 '''xg2=100,xg1=-25
