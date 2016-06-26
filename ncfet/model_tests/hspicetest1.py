@@ -19,9 +19,9 @@ import matplotlib.pyplot as plt
 #creates hspice python class
 sim1 = hspicepython.hspicepython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
-sim1.updateparameter('modelpath','/users/jpduarte/BSIM_CM_Matlab/BSIM_model_development_v2/DM_Verilog_Hspice/Models_Verilog/BSIMCMG109.0.0beta2/BSIMCMG/workingcode/bsimcmg.va')
+sim1.updateparameter('modelpath','/users/jpduarte/research/BSIMCMG/code/bsimcmg.va')
 #add path to model card of device under study
-sim1.updateparameter('modelcardpath',rootfolder+'/userjp/ncfet/modelcards/modelcard.nmos')
+sim1.updateparameter('modelcardpath','/users/jpduarte/research/userjp/ncfet/modelcards/modelcard_nc.nmos')
 #add path to folder which will contain simulation files
 sim1.updateparameter('simulationfolder',rootfolder+'/userjp/ncfet/hspicesimulations/idvg/')
 #define simulation file name
@@ -31,11 +31,11 @@ sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[np.linspace(0.05,1,2), np.linspace(0.0,1,100), [0], [0]])
+sim1.updateparameter('dcbiases',[[0.05], np.linspace(0.0,1,30), [0], [0]])
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['L'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[1000e-9]])
+sim1.updateparameter('deviceparametervalue',[[30e-9]])
 #add variables to save
 sim1.updateparameter('vartosave',['Ids','qs'])
 
