@@ -21,7 +21,7 @@ sim1 = hspicepython.hspicepython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
 sim1.updateparameter('modelpath','/users/jpduarte/research/BSIMCMG/code/bsimcmg.va')
 #add path to model card of device under study
-sim1.updateparameter('modelcardpath','/users/jpduarte/research/userjp/ncfet/modelcards/modelcard_nc.nmos')
+sim1.updateparameter('modelcardpath','//users/jpduarte/research/userjp/ncfet/modelcards/modelcard_nc.nmos')
 #add path to folder which will contain simulation files
 sim1.updateparameter('simulationfolder',rootfolder+'/userjp/ncfet/hspicesimulations/idvg/')
 #define simulation file name
@@ -31,13 +31,14 @@ sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[[0.05], np.linspace(0.0,1,30), [0], [0]])
+sim1.updateparameter('dcbiases',[[0.05,1], np.linspace(0,1.0,50), [0], [0]])
 #device parameters defined to sweep in simulation
-sim1.updateparameter('deviceparameter',['L'])
+sim1.updateparameter('deviceparameter',['L','alpha1_P','alpha11_P','t_FE'])#,'TFIN','NFIN','NRS','NRD'])#TFIN=15n L=30n NFIN=10 NRS=1 NRD=1
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[30e-9]])
+sim1.updateparameter('deviceparametervalue',[[30e-9],[-8.4927e+07],[3.1166e+08],[30e-9,0]])#,[15e-9],[10],[1],[1]])
 #add variables to save
-sim1.updateparameter('vartosave',['Ids','qs'])
+sim1.updateparameter('vartosave',['Ids','qs','vfes'])
+
 
 ###########################################################################
 ##################Simulation Run###########################################
@@ -50,5 +51,15 @@ pathandfile = sim1.simulationfolder + sim1.simresultfilename
 P1.updateparameter('symbol','o')
 P1.updateparameter('lw',2)
 P1.plotfiledata(pathandfile,'Vg','Ids',1)
+
+
+P1.updateparameter('symbol','o')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','qs',2)
+
+
+P1.updateparameter('symbol','o')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','vfes',3)
 
 plt.show() 
