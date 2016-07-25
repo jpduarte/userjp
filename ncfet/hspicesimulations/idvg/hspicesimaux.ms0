@@ -1,0 +1,5 @@
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.03 linux64' PARAM_COUNT=0
+$OPTION MEASFORM=1
+.TITLE '*script to generate hspice simulation using cmdp, juan duarte'
+vth temper alter#
+ 1.357e-02   27.0000 1

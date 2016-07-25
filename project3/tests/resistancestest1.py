@@ -19,31 +19,32 @@ import matplotlib.pyplot as plt
 #creates hspice python class
 sim1 = hspicepython.hspicepython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
-sim1.updateparameter('modelpath','/users/jpduarte/research/cmdp/userjp/project3/models/res.va')
+sim1.updateparameter('modelpath','/users/jpduarte/research/userjp/project3/models/res.va')
 #add path to model card of device under study
-sim1.updateparameter('modelcardpath','/users/jpduarte/research/cmdp/userjp/project3/model_cards/modelcardR.res')
+sim1.updateparameter('modelcardpath','/users/jpduarte/research/userjp/project3/model_cards/modelcardR.res')
 #add path to folder which will contain simulation files
-sim1.updateparameter('simulationfolder',rootfolder+'/cmdp/userjp/project3/hspicesimulations/IV/')
+sim1.updateparameter('simulationfolder',rootfolder+'/userjp/project3/hspicesimulations/IV/')
 #define simulation file name
-sim1.updateparameter('simfilename','resistancesim')
+sim1.updateparameter('simfilename','resistancesimaux')
 #define simulation final results file 
-sim1.updateparameter('simresultfilename','resistancesimresult.txt')
+sim1.updateparameter('simresultfilename','resistancesimresultaux.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vp', 'Vn'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[np.linspace(0.0,1,10), [0]])
+sim1.updateparameter('dcbiases',[np.linspace(0.0,1,10), [0.0]])
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['L'])
 #device parameter values for simulation
 sim1.updateparameter('deviceparametervalue',[[1000e-9]])
 #add variables to save  
 #sim1.updateparameter('vartosafe',['xfinal1','xdirect1','xfinal2','xdirect1'])
-sim1.updateparameter('vartosafe',['dxfinaldVp1','dxdirectdVp1','dxfinaldVp2','dxdirectdVp2'])
+sim1.updateparameter('vartosave',['dxfinaldVp1','dxdirectdVp1','dxfinaldVp2','dxdirectdVp2'])
 
 ###########################################################################
 ##################Simulation Excecution####################################
 ###########################################################################
-sim1.runhspice()
+print sim1
+sim1.runsim()
 Vx = 'Vp'
 
 #plot

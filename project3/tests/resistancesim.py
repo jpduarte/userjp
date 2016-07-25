@@ -37,13 +37,14 @@ sim1.updateparameter('deviceparameter',['L'])
 #device parameter values for simulation
 sim1.updateparameter('deviceparametervalue',[[1000e-9]])
 #add variables to save  
-sim1.updateparameter('vartosafe',['dq1','dq2','phifsnew','phifguess'])
+sim1.updateparameter('vartosave',['dq1','dq2','phifsnew','phifguess'])
 
 
 ###########################################################################
 ##################Simulation Excecution####################################
 ###########################################################################
-sim1.runhspice()
+#sim1.runhspice()
+sim1.runsim()
 Vx = 'Vp'
 
 #plot

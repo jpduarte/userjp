@@ -32,7 +32,7 @@ sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vgf', 'Vs', 'Vgb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[ np.linspace(-0.5,5,101), np.linspace(5,5,1), [0],  np.linspace(0,-5,11)])
+sim1.updateparameter('dcbiases',[ np.arange(0,1,0.01), np.linspace(1,1,1), [0],  np.linspace(0,0,1)])
 #sim1.updateparameter('dcbiases',[np.linspace(0.1,1,10), np.linspace(1.5,1.5,1), [0], [0]])
 #sim1.updateparameter('dcbiases',[np.linspace(-1,1,100), np.linspace(1,1,1), [0], [2]])
 #[np.linspace(0.2,0.2,1), np.linspace(0,2,100), [0], [2]])
@@ -40,9 +40,9 @@ sim1.updateparameter('dcbiases',[ np.linspace(-0.5,5,101), np.linspace(5,5,1), [
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['L'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[55e-9]]) #TODO: fix parameter sweep, it is not working, seems it must be declare in the device part
+sim1.updateparameter('deviceparametervalue',[[1000e-9,500e-9,100e-9,55e-9,24e-9]]) #TODO: fix parameter sweep, it is not working, seems it must be declare in the device part
 #add variables to save
-sim1.updateparameter('vartosave',['IDS'])#no ok: CBGSI ,'phifdnew','vbgs'
+sim1.updateparameter('vartosave',['IDS','vds'])#no ok: CBGSI ,'phifdnew','vbgs'
 #sim1.updateparameter('vartosave',['qsqrtaux1s','qsqrtaux2s','qsqrtaux3s','qsqrtaux4s',])#no ok: CBGSI ,'phifdnew','vbgs'
 ###########################################################################
 ##################Simulation Excecution####################################
@@ -60,7 +60,9 @@ P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],1)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('symbol','-')
 P1.plotfiledata(pathandfile,Vx,sim1.vartosave[0],2)
-
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,sim1.vartosave[1],2)
 
 plt.show()
 

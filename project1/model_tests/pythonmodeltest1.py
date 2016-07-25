@@ -1,7 +1,7 @@
 #example: run hspice Id-Vg using python
 #Juan Duarte, BSIM Group
 
-rootfolder = '/home/juan/research'
+rootfolder = '/home/bsim2015/research'
 
 #indicate path for folders containing required classes
 import sys

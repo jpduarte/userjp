@@ -1,0 +1,33 @@
+* "simulator" "HSPICE" 
+* "version" "K-2015.06-SP1-1 linux64"
+* "format" "HSP"
+* "rundate" "13:18:28 01/25/2016 "
+* "netlist" "ringosc_17stg.sp "
+* "runtitle" "*sample netlist for bsim-img"
+* time =    0.            
+* temperature =   25.0000        
+*** BEGIN: Saved Operating Point ***                     
+.option 
++ gmindc=   1.0000p       
+.nodeset
++ 1 = 999.9706m       
++ 2 = 313.5660f       
++ 3 =   1.0000        
++ 4 = 313.4094f       
++ 5 =   1.0000        
++ 6 = 313.4094f       
++ 7 =   1.0000        
++ 8 = 313.4094f       
++ 9 =   1.0000        
++ 10 = 313.4094f       
++ 11 =   1.0000        
++ 12 = 313.4094f       
++ 13 =   1.0000        
++ 14 = 313.4094f       
++ 15 =   1.0000        
++ 16 = 313.4094f       
++ 17 =   1.0000        
++ supply =   1.0000        
++ vbgn =   0.            
++ vbgp =   1.0000        
+***   END: Saved Operating Point ***                     
