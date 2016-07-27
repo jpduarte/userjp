@@ -35,9 +35,9 @@ sim1.updateparameter('dcbiases',[[0.05], np.linspace(0.0,1.5,100), [0], [0]])
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['Lg','a0','b0','c0','cgsfe'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[100e-9],[-1.1],[0.0001,0.001,0.005,0.01],[0.000],[0]])#[0.0],[0.00],[0.000]])#,0.005
+sim1.updateparameter('deviceparametervalue',[[100e-9],[-1.1],[0.01],[0.000],[0,2,4]])#[0.0],[0.00],[0.000]])#,0.005
 #add variables to save  
-sim1.updateparameter('vartosave',['qs','qs0','qs1','qs2','qs3','vfe1','vfe2','vfe3','delta1','delta2','delta3','qmfe','qmlin','qmfe1','qmfe3','qmguess','qgsfe'])#no ok: CBGSI
+sim1.updateparameter('vartosave',['qs','qs0','qs1','qs2','qs3','vfe1','vfe2','vfe3','delta1','delta2','delta3','qmfe','qmlin','qmfe1','qmfe3','qmguess','qgsfe','vfe'])#no ok: CBGSI
 
 ###########################################################################
 ##################Simulation Excecution####################################
@@ -141,7 +141,7 @@ P1.plotfiledata(pathandfile,Vx,'vfe2',6)'''
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','.')
-P1.plotfiledata(pathandfile,Vx,'vfe3',6)
+P1.plotfiledata(pathandfile,Vx,'vfe',6)
 
 ##########################################
 
