@@ -1,8 +1,8 @@
 #example: run hspice Id-Vg using python
 #Juan Duarte, BSIM Group
 
-rootfolder = '/home/bsim2015/research'
-
+rootfolder = '/home/juan/research'
+#rootfolder = '/home/bsim2015/research'
 #indicate path for folders containing required classes
 import sys
 sys.path.insert(0, rootfolder+'/cmdp/pycsimsupport')
@@ -36,9 +36,9 @@ sim1.updateparameter('dcbiases',[[0.05], np.linspace(0.0,1.5,100), [0], [0]])
 sim1.updateparameter('deviceparameter',['Lg','a0','b0','c0','cgsfe'])
 #device parameter values for simulation
 
-sim1.updateparameter('deviceparametervalue',[[100e-9],[-0.99],[0.01],[0.0],[3.0]])#[0.0],[0.00],[0.000]])#,0.005
+sim1.updateparameter('deviceparametervalue',[[100e-9],[-3.0],[0.01],[0.0],[3.0]])#[0.0],[0.00],[0.000]])#,0.005
 #add variables to save  
-sim1.updateparameter('vartosave',['qs','qs0','qs1','qs2','qs3','vfe1','vfe2','vfe3','delta1','delta2','delta3','qmfe','qmlin','qmfe1','qmfe3','qmguess','qgsfe','vfe'])#no ok: CBGSI
+sim1.updateparameter('vartosave',['qs','qs0','qs1','qs2','qs3','vfe1','vfe2','vfe3','delta1','delta2','delta3','qmfe','qmlin','qmfe1','qmfe3','qmguess','qgsfe','vfe','qmfeaux'])#no ok: CBGSI
 
 
 ###########################################################################
@@ -84,7 +84,8 @@ P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('symbol','--')
 P1.plotfiledata(pathandfile,Vx,'qmguess',4)'''
-'''P1.updateparameter('derivativeorder',0)
+
+P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','o')
 P1.plotfiledata(pathandfile,Vx,'qs0',5)
@@ -104,27 +105,25 @@ P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','.')
 P1.plotfiledata(pathandfile,Vx,'qs3',5)
 
+
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','*')
-P1.plotfiledata(pathandfile,Vx,'qmfe',5)
+P1.plotfiledata(pathandfile,Vx,'qmfeaux',9)
 
 
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','o')
-P1.plotfiledata(pathandfile,Vx,'qmfe1',5)
+P1.plotfiledata(pathandfile,Vx,'qmfe1',9)
 
 
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','>')
-P1.plotfiledata(pathandfile,Vx,'qmfe3',5) 
+P1.plotfiledata(pathandfile,Vx,'qmfe3',9) 
 
-P1.updateparameter('derivativeorder',0)
-P1.updateparameter('ylogflag',0)
-P1.updateparameter('symbol','>')
-P1.plotfiledata(pathandfile,Vx,'qmlin',5)'''
+
 
 
 
@@ -157,11 +156,8 @@ P1.plotfiledata(pathandfile,Vx,'qgsfe',7)
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','.')
-<<<<<<< HEAD
 P1.plotfiledata(pathandfile,Vx,'vfe',8)
-=======
-P1.plotfiledata(pathandfile,Vx,'qgsfe',8)
->>>>>>> 746792a0db4e7c44cfb758df04441e86cb80b1bc
+
 
 
 plt.show() 
