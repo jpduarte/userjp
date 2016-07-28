@@ -25,27 +25,28 @@ sim1.updateparameter('modelcardpath','//users/jpduarte/research/userjp/ncfet/mod
 #add path to folder which will contain simulation files
 sim1.updateparameter('simulationfolder',rootfolder+'/userjp/ncfet/hspicesimulations/idvg/')
 #define simulation file name
-sim1.updateparameter('simfilename','hspicesimaux')
+sim1.updateparameter('simfilename','hspicesimaux1')
 #define simulation final results file 
-sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
+sim1.updateparameter('simresultfilename','hspicesimauxresult1.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[[0.5],np.concatenate((np.linspace(0,1.0,100),np.linspace(1.0,0,100)), axis=0) , [0], [0]])#np.linspace(0,1.0,100)
+sim1.updateparameter('dcbiases',[[0.5],np.concatenate((np.linspace(0,1.0,100),np.linspace(1.0,0,100)),axis=0) , [0], [0]])#np.concatenate((np.linspace(0,1.0,50),np.linspace(1.0,0,50)),axis=0) 
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['L','alpha1_P','alpha11_P','t_FE',])#,'TFIN','NFIN','NRS','NRD'])#TFIN=15n L=30n NFIN=10 NRS=1 NRD=1
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[30e-9],[-8.4927e+07],[6.1166e+11],[700e-9]])#,[15e-9],[10],[1],[1]])
+sim1.updateparameter('deviceparametervalue',[[30e-9],[-8.4927e+07],[6.1166e+11],[700e-9]])#,[15e-9],[10],[1],[1]]) 100e-9,200e-9,300e-9
 #add variables to save
-sim1.updateparameter('vartosave',['Ids','qs','vfes','vfed','vgs'])#,'I1aux','I2aux','I3aux','Ib1aux','Ib2aux','Ib3aux','I4aux','Ib4aux'])
+sim1.updateparameter('vartosave',['Ids','qis','qid','vfes','vfed','vn1aux','in1aux','vn2aux','in2aux'])#,'I1aux','I2aux','I3aux','Ib1aux','Ib2aux','Ib3aux','I4aux','Ib4aux'])
 
 sim1.updateparameter('abstol','1e-6')
 sim1.updateparameter('reltol','1e-6')
-sim1.updateparameter('absv','2e-2')
+sim1.updateparameter('absv','1e-2')
 ###########################################################################
 ##################Simulation Run###########################################
 ###########################################################################
 sim1.runsim()
+sim1.hspicetotex('x','y')#,sim1.allvaldc)
 
 #plot
 P1 = plotgeneral.plotgeneral()
@@ -61,18 +62,45 @@ P1.updateparameter('ylogflag',1)
 P1.plotfiledata(pathandfile,'Vg','Ids',2)
 
 P1.updateparameter('ylogflag',0)
-P1.updateparameter('symbol','o-')
+P1.updateparameter('symbol','-')
 P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qs',3)
+P1.plotfiledata(pathandfile,'Vg','qis',3)
+
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','-')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','qid',4)
 
 
 P1.updateparameter('symbol','o-')
 P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','vfes',4)
-P1.updateparameter('symbol','s')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','vfed',4)
+P1.plotfiledata(pathandfile,'Vg','vfes',5)
 
+P1.updateparameter('symbol','>-')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','vn1aux',5)
+
+P1.updateparameter('symbol','o-')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','vfed',6)
+
+
+P1.updateparameter('symbol','>-')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','vn2aux',6)
+
+
+P1.updateparameter('symbol','o-')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','in1aux',7)
+
+P1.updateparameter('symbol','o-')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','in2aux',8)
+
+'''P1.updateparameter('symbol','o-')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','dvgdq',6)'''
 
 '''P1.updateparameter('symbol','o')
 P1.updateparameter('lw',2)
