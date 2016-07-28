@@ -31,13 +31,13 @@ sim1.updateparameter('simresultfilename','pythonsimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[[0.05], np.linspace(0.0,1.0,300), [0], [0]])
+sim1.updateparameter('dcbiases',[[0.05], np.concatenate((np.linspace(0,0.5,100),np.linspace(0.5,0,100)),axis=0), [0], [0]])
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['Lg','TFIN','HFIN','tins','alpha1_P','alpha11_P','cgsfe','t_FE'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[1000e-9],[1.4e-8],[3.0e-8],[1.5e-9],[-8.4927e+07],[6.1166e+11],[0],[550e-9]])#,600e-9, 0,200e-9,300e-9,400e-9,
+sim1.updateparameter('deviceparametervalue',[[1000e-9],[1.4e-8],[3.0e-8],[1.5e-9],[-8.4927e+07],[6.1166e+11],[0],[600e-9]])#,600e-9, 0,200e-9,300e-9,400e-9,
 #add variables to save  
-sim1.updateparameter('vartosave',['qs','vfe','fwhile','qmfeguess','dvfedvg'])#no ok: CBGSI
+sim1.updateparameter('vartosave',['qs','vfe','qmfeguess','dvfedvg'])#no ok: CBGSI
 
 ###########################################################################
 ##################Simulation Excecution####################################
@@ -52,13 +52,13 @@ pathandfile = sim1.simulationfolder + sim1.simresultfilename
 
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('lw',2)
-P1.updateparameter('symbol','-')
+P1.updateparameter('symbol','o-')
 P1.plotfiledata(pathandfile,Vx,'qs',1)
 
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('lw',2)
-P1.updateparameter('symbol','-.')
-P1.plotfiledata(pathandfile,Vx,'qmfeguess',1)
+P1.updateparameter('symbol','^-')
+#P1.plotfiledata(pathandfile,Vx,'qmfeguess',1)
 
 '''P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
@@ -73,7 +73,7 @@ P1.plotfiledata(pathandfile,Vx,'qmfe',3)'''
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('lw',2)
-P1.updateparameter('symbol','-')
+P1.updateparameter('symbol','o-')
 P1.plotfiledata(pathandfile,Vx,'qs',2)
 
 
@@ -81,8 +81,8 @@ P1.plotfiledata(pathandfile,Vx,'qs',2)
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('lw',2)
-P1.updateparameter('symbol','-.')
-P1.plotfiledata(pathandfile,Vx,'qmfeguess',2)
+P1.updateparameter('symbol','^-')
+#P1.plotfiledata(pathandfile,Vx,'qmfeguess',2)
 
 
 
@@ -148,7 +148,7 @@ P1.plotfiledata(pathandfile,Vx,'vfe',3)
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('lw',2)
-P1.updateparameter('symbol','o')
+P1.updateparameter('symbol','o-')
 P1.plotfiledata(pathandfile,'vfe','qs',4)
 
 P1.updateparameter('derivativeorder',0)
