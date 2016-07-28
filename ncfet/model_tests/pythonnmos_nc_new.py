@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 #creates pycsimpython class
 sim1 = pycsimpython.pycsimpython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
-sim1.updateparameter('modelpath',rootfolder+'/cmdp/compactmodels/UFCM_nc_newguess.py')
+sim1.updateparameter('modelpath',rootfolder+'/cmdp/compactmodels/UFCM_nc_FEIS.py')
 #add path to model card of device under study
 sim1.updateparameter('modelcardpath',rootfolder+'/userjp/ncfet/modelcards/modecardncfet.txt')
 #add path to folder which will contain simulation files
@@ -58,7 +58,7 @@ P1.plotfiledata(pathandfile,Vx,'qs',1)
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('lw',2)
 P1.updateparameter('symbol','^-')
-#P1.plotfiledata(pathandfile,Vx,'qmfeguess',1)
+P1.plotfiledata(pathandfile,Vx,'qmfeguess',1)
 
 '''P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
@@ -81,8 +81,8 @@ P1.plotfiledata(pathandfile,Vx,'qs',2)
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('lw',2)
-P1.updateparameter('symbol','^-')
-#P1.plotfiledata(pathandfile,Vx,'qmfeguess',2)
+P1.updateparameter('symbol','-')
+P1.plotfiledata(pathandfile,Vx,'qmfeguess',2)
 
 
 
