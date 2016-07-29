@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 #creates pycsimpython class
 sim1 = pycsimpython.pycsimpython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
-sim1.updateparameter('modelpath',rootfolder+'/cmdp/compactmodels/UFCM_nc_FEIS.py')
+sim1.updateparameter('modelpath',rootfolder+'/cmdp/compactmodels/UFCM_nc_FEIS_Ids.py')
 #add path to model card of device under study
 sim1.updateparameter('modelcardpath',rootfolder+'/userjp/ncfet/modelcards/modecardncfet.txt')
 #add path to folder which will contain simulation files
@@ -31,13 +31,13 @@ sim1.updateparameter('simresultfilename','pythonsimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[[0.05], np.concatenate((np.linspace(0,0.5,100),np.linspace(0.5,0,100)),axis=0), [0], [0]])
+sim1.updateparameter('dcbiases',[[0.1], np.concatenate((np.linspace(0,1.0,200),np.linspace(1.0,0,200)),axis=0), [0], [0]])
 #device parameters defined to sweep in simulation
-sim1.updateparameter('deviceparameter',['Lg','TFIN','HFIN','tins','alpha1_P','alpha11_P','cgsfe','t_FE'])
+sim1.updateparameter('deviceparameter',['Lg','TFIN','HFIN','tins','alpha1_P','alpha11_P','cgsfe','t_FE','gauss_n'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[1000e-9],[1.4e-8],[3.0e-8],[1.5e-9],[-8.4927e+07],[6.1166e+11],[0],[600e-9]])#,600e-9, 0,200e-9,300e-9,400e-9,
+sim1.updateparameter('deviceparametervalue',[[1000e-9],[1.4e-8],[3.0e-8],[1.5e-9],[-8.4927e+07],[6.1166e+11],[0],[800e-9],[100]])#,600e-9, 0,200e-9,300e-9,400e-9,
 #add variables to save  
-sim1.updateparameter('vartosave',['qs','vfe','qmfeguess','dvfedvg'])#no ok: CBGSI
+sim1.updateparameter('vartosave',['qs','vfe','qmguess','q0','q1','q2','q3','q4','ids0'])#no ok: CBGSI
 
 ###########################################################################
 ##################Simulation Excecution####################################
@@ -58,7 +58,7 @@ P1.plotfiledata(pathandfile,Vx,'qs',1)
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('lw',2)
 P1.updateparameter('symbol','^-')
-P1.plotfiledata(pathandfile,Vx,'qmfeguess',1)
+P1.plotfiledata(pathandfile,Vx,'qmguess',1)
 
 '''P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
@@ -82,7 +82,7 @@ P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('lw',2)
 P1.updateparameter('symbol','-')
-P1.plotfiledata(pathandfile,Vx,'qmfeguess',2)
+P1.plotfiledata(pathandfile,Vx,'qmguess',2)
 
 
 
@@ -151,12 +151,6 @@ P1.updateparameter('lw',2)
 P1.updateparameter('symbol','o-')
 P1.plotfiledata(pathandfile,'vfe','qs',4)
 
-P1.updateparameter('derivativeorder',0)
-P1.updateparameter('ylogflag',0)
-P1.updateparameter('lw',2)
-P1.updateparameter('symbol','o')
-P1.plotfiledata(pathandfile,Vx,'dvfedvg',5)
-
 
 
 ##########################################
@@ -178,8 +172,24 @@ P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','.')
 P1.plotfiledata(pathandfile,Vx,'qgsfe',8)'''
 
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('lw',2)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'q0',5)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'q1',5)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'q2',5)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'q3',5)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'q4',5)
 
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'ids0',6)
 
-
+P1.updateparameter('ylogflag',1)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'ids0',7)
 
 plt.show() 
