@@ -6,6 +6,7 @@
 +countRmodel=0
 +NCFETMOD=1
 +cgsfe = 2.0
++SSMOD=1
 
 +PHIG = 4.39
 
