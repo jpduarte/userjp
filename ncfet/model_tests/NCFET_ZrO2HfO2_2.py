@@ -31,12 +31,11 @@ sim1.updateparameter('simresultfilename','pythonsimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[[0.1], np.concatenate((np.linspace(0,1.0,100),np.linspace(1.0,0,100)),axis=0), [0], [0]])
+sim1.updateparameter('dcbiases',[[0.5], np.concatenate((np.linspace(0,1.0,50),np.linspace(1.0,0,50)),axis=0), [0], [0]])
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['Lg','PHIG','Nch','TFIN','HFIN','tins','alpha1_P','alpha11_P','cgsfe','t_FE','gauss_n','SSrolloff','ul','QMFACTORCV'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[30000e-9],[4.57],[1e17],[3e-8],[3.0e-8],[0.9e-9],[-5.1e9],[6.1166e+11],[0.0],[5e-9],[200],[0.2],[50],[0.5]])
-#sim1.updateparameter('deviceparametervalue',[[30000e-9],[4.57],[1e17],[3e-8],[3.0e-8],[0.9e-9],[-5.1e9],[6.1166e+11],[0.0],[5e-9],[50],[0.2],[50],[0.5]])
+sim1.updateparameter('deviceparametervalue',[[30000e-9],[4.5],[1e17],[3e-8],[3.0e-8],[0.3e-9],[-2.7e9],[6.1166e+11],[2],[5e-9],[50],[0.25],[50],[0]])
 #add variables to save  
 sim1.updateparameter('vartosave',['qs','vfe','qmguess','q0','q1','q2','q3','q4','ids0'])#no ok: CBGSI
 

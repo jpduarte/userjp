@@ -7,6 +7,7 @@
 +NCFETMOD=1
 +cgsfe = 2.0
 +SSMOD=1
++QMFACTORCV=1
 
 +PHIG = 4.39
 
