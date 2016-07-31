@@ -31,13 +31,13 @@ sim1.updateparameter('simresultfilename','hspicesimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[[0.5],np.linspace(0,1.0,50) , [0], [0]])#np.linspace(0,1.0,100)
+sim1.updateparameter('dcbiases',[[0.001],np.linspace(0,1.0,50) , [0], [0]])#np.linspace(0,1.0,100)
 #device parameters defined to sweep in simulation
-sim1.updateparameter('deviceparameter',['L','alpha1_P','alpha11_P','t_FE',])#,'TFIN','NFIN','NRS','NRD'])#TFIN=15n L=30n NFIN=10 NRS=1 NRD=1
+sim1.updateparameter('deviceparameter',['L','alpha1_P','alpha11_P','t_FE'])#,'TFIN','NFIN','NRS','NRD'])#TFIN=15n L=30n NFIN=10 NRS=1 NRD=1
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[30e-9],[-8.4927e+07],[6.1166e+11],[0,100e-9,200e-9,300e-9]])#,[15e-9],[10],[1],[1]])
+sim1.updateparameter('deviceparametervalue',[[1000e-9],[-8.4927e+07],[6.1166e+11],[0,300e-9,700e-9]])#,[15e-9],[10],[1],[1]])
 #add variables to save
-sim1.updateparameter('vartosave',['Ids','qs','vfes','vfed','vgs'])#,'I1aux','I2aux','I3aux','Ib1aux','Ib2aux','Ib3aux','I4aux','Ib4aux'])
+sim1.updateparameter('vartosave',['Ids','qis','vfes','vfed','vgs','a0ncfet','Cins','Weff_UFCM'])#,'I1aux','I2aux','I3aux','Ib1aux','Ib2aux','Ib3aux','I4aux','Ib4aux'])
 
 sim1.updateparameter('abstol','1e-6')
 sim1.updateparameter('reltol','1e-6')
@@ -46,6 +46,7 @@ sim1.updateparameter('absv','1e-6')
 ##################Simulation Run###########################################
 ###########################################################################
 sim1.runsim()
+sim1.hspicetotex('x','y')
 
 #plot
 P1 = plotgeneral.plotgeneral()
@@ -63,7 +64,7 @@ P1.plotfiledata(pathandfile,'Vg','Ids',2)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','-')
 P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qs',3)
+P1.plotfiledata(pathandfile,'Vg','qis',3)
 
 
 P1.updateparameter('symbol','-')
