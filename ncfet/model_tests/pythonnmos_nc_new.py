@@ -2,7 +2,7 @@
 #Juan Duarte, BSIM Group
 
 rootfolder = '/home/bsim2015/research'
-
+#rootfolder = '/home/bsim2015/research'
 #indicate path for folders containing required classes
 import sys
 sys.path.insert(0, rootfolder+'/cmdp/pycsimsupport')
@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 #creates pycsimpython class
 sim1 = pycsimpython.pycsimpython('idvg')
 #add path to verilog code with model, TODO: include case where model is already incorporated to simulator
-sim1.updateparameter('modelpath',rootfolder+'/cmdp/compactmodels/UFCM_nc_newguess.py')
+sim1.updateparameter('modelpath',rootfolder+'/cmdp/compactmodels/UFCM_nc_FEIS.py')
 #add path to model card of device under study
 sim1.updateparameter('modelcardpath',rootfolder+'/userjp/ncfet/modelcards/modecardncfet.txt')
 #add path to folder which will contain simulation files
@@ -31,13 +31,13 @@ sim1.updateparameter('simresultfilename','pythonsimauxresult.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
-sim1.updateparameter('dcbiases',[[0.05], np.linspace(0.0,1.5,100), [0], [0]])
+sim1.updateparameter('dcbiases',[[0.1], np.concatenate((np.linspace(0,1.0,200),np.linspace(1.0,0,200)),axis=0), [0], [0]])
 #device parameters defined to sweep in simulation
-sim1.updateparameter('deviceparameter',['Lg','a0','b0','c0','cgsfe'])
+sim1.updateparameter('deviceparameter',['Lg','PHIG','TFIN','HFIN','tins','alpha1_P','alpha11_P','cgsfe','t_FE','gauss_n','SSrolloff','ul','QMFACTORCV'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[100e-9],[-1.1],[0.0001,0.001,0.005,0.01],[0.000],[0]])#[0.0],[0.00],[0.000]])#,0.005
+sim1.updateparameter('deviceparametervalue',[[30000e-9],[4.6],[1.4e-8],[3.0e-8],[0.3e-9],[-3e9],[6.1166e+11],[0],[5e-9],[100],[0.0],[400],[0,0.1]])#,600e-9, 0,200e-9,300e-9,400e-9,
 #add variables to save  
-sim1.updateparameter('vartosave',['qs','qs0','qs1','qs2','qs3','vfe1','vfe2','vfe3','delta1','delta2','delta3','qmfe','qmlin','qmfe1','qmfe3','qmguess','qgsfe'])#no ok: CBGSI
+sim1.updateparameter('vartosave',['qs','vfe','qmguess'])#no ok: CBGSI
 
 ###########################################################################
 ##################Simulation Excecution####################################
@@ -52,14 +52,18 @@ pathandfile = sim1.simulationfolder + sim1.simresultfilename
 
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('lw',2)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'qs',1)
+
+P1.updateparameter('derivativeorder',0)
+P1.updateparameter('lw',2)
 P1.updateparameter('symbol','-')
-P1.plotfiledata(pathandfile,Vx,'qs',3)
+P1.plotfiledata(pathandfile,Vx,'qmguess',1)
 
 '''P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','--')
 P1.plotfiledata(pathandfile,Vx,'qmguess',3)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','-.')
@@ -69,15 +73,23 @@ P1.plotfiledata(pathandfile,Vx,'qmfe',3)'''
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('lw',2)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'qs',2)
+
+
+
+P1.updateparameter('derivativeorder',0)
+P1.updateparameter('ylogflag',1)
+P1.updateparameter('lw',2)
 P1.updateparameter('symbol','-')
-P1.plotfiledata(pathandfile,Vx,'qs',4)
+P1.plotfiledata(pathandfile,Vx,'qmguess',2)
+
 
 
 '''P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('symbol','-.')
 P1.plotfiledata(pathandfile,Vx,'qmfe',4)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',1)
 P1.updateparameter('symbol','--')
@@ -86,39 +98,30 @@ P1.plotfiledata(pathandfile,Vx,'qmguess',4)'''
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','o')
 P1.plotfiledata(pathandfile,Vx,'qs0',5)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','--')
 P1.plotfiledata(pathandfile,Vx,'qs1',5)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','-.')
 P1.plotfiledata(pathandfile,Vx,'qs2',5)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','.')
 P1.plotfiledata(pathandfile,Vx,'qs3',5)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','*')
 P1.plotfiledata(pathandfile,Vx,'qmfe',5)
-
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','o')
 P1.plotfiledata(pathandfile,Vx,'qmfe1',5)
-
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','>')
 P1.plotfiledata(pathandfile,Vx,'qmfe3',5) 
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','>')
@@ -132,7 +135,6 @@ P1.plotfiledata(pathandfile,Vx,'qmlin',5)'''
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','--')
 P1.plotfiledata(pathandfile,Vx,'vfe1',6)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','-.')
@@ -140,33 +142,35 @@ P1.plotfiledata(pathandfile,Vx,'vfe2',6)'''
 
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
-P1.updateparameter('symbol','.')
-P1.plotfiledata(pathandfile,Vx,'vfe3',6)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,Vx,'vfe',3)
+
+P1.updateparameter('derivativeorder',0)
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('lw',2)
+P1.updateparameter('symbol','o-')
+P1.plotfiledata(pathandfile,'vfe','qs',4)
+
+
 
 ##########################################
-
+'''
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','--')
 P1.plotfiledata(pathandfile,Vx,'delta1',7)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','-.')
 P1.plotfiledata(pathandfile,Vx,'delta2',7)
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','.')
 P1.plotfiledata(pathandfile,Vx,'delta3',7)
-
-
-
-
 P1.updateparameter('derivativeorder',0)
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','.')
-P1.plotfiledata(pathandfile,Vx,'qgsfe',8)
+P1.plotfiledata(pathandfile,Vx,'qgsfe',8)'''
 
 
 plt.show() 
