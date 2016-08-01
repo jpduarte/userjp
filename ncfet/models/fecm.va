@@ -1,0 +1,24 @@
+//ferroelectric model
+//Juan Pablo Duarte, jpduarte@berkeley.edu July 2016
+
+
+module fecm(n,p);
+inout p,n;
+electrical p,n;
+electrical N1;
+
+parameter real r=2 from [0:inf);
+parameter real a0=-1 from (-inf:inf);
+parameter real b0=0.1 from (-inf:inf);
+
+real aux1;
+
+analog begin
+    I(p,n)<+ r*ddt(V(N1));
+    //V(p,n) <+ r*I(p,n)+(a0*V(N1)+b0*pow(V(N1),3.0));
+    I(N1) <+ V(p,n)-r*I(p,n) -(a0*V(N1)+b0*pow(V(N1),3.0)); 
+    qfe=V(N1);
+    vfe=(a0*V(N1)+b0*pow(V(N1),3.0));
+end
+
+endmodule

@@ -111,7 +111,7 @@
 + PVAG      = 0
 + QM0       = 0.001
 + QMFACTOR  = 2.5
-+ RDSW      = 200
++ RDSW      = 0
 + RDSWMIN   = 0
 + RDWMIN    = 0
 + RSHD      = 0
@@ -139,6 +139,6 @@
 + WR        = 1
 + WTH0      = 2.6e-7
 + XL        = 0
-+ NFIN=10 
++ NFIN=1 
 +NRS=1 
 +NRD=1

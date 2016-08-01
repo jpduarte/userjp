@@ -46,7 +46,7 @@ sim1.updateparameter('absv','1e-3')
 ##################Simulation Run###########################################
 ###########################################################################
 sim1.runsim()
-
+sim1.hspicetotex('x','y')
 #plot
 P1 = plotgeneral.plotgeneral()
 pathandfile = sim1.simulationfolder + sim1.simresultfilename

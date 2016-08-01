@@ -1,0 +1,12 @@
+***  BSIM-CMG Sample Modelcard for NMOS  ***
+
+*****************************************************************************
+**  The BSIM-CMG sample modelcard below was not extracted/obtained         **
+**  from/based on any real technologies. It should not be used for any     **
+**  other purposes except for benchmarking the implementation of BSIM-CMG  **
+**  against BSIM team's standard results.                                  **
+*****************************************************************************
+
+.model nmos1 fecm
++ r   = 1
+
