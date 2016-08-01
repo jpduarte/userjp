@@ -13,7 +13,7 @@ real aux1;
 
 analog begin
     V(p,n) <+ r*I(p,n);
-    aux1=r;
+    aux1=V(p,n);
 end
 
 endmodule

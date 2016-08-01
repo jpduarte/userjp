@@ -1,5 +1,5 @@
 *script to generate hspice simulation using cmdp, Juan Duarte 
-*Date: 07/27/2016, time: 17:51:39
+*Date: 07/31/2016, time: 16:53:53
 
 .option abstol=1e-6 reltol=1e-6 post ingold 
 .option ABSV=1e-2 
