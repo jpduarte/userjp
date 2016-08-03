@@ -1,0 +1,76 @@
+******** BSIM-MG 105 Sample Modelcard for NMOS ********
+
+** The BSIM-MG sample modelcard below was not extracted/obtained
+** from/based on any real technologies. It should not be used for any
+** other purposes except for benchmarking the implementation of BSIM-MG
+** against BSIM Team's standard results
+
+.model nmos1 bsimcmg
++HFIN = 42n
++TFIN = 8n
++ FPITCH =  15.00n 
+ + CDSC = 100.0m 
+ + CDSCD = 7.00m 
+ + CIT = 0.900m 
+ + DEVTYPE = 1.000  
+ + DSUB = 400.0m 
+ + DVT0 = 50.0m 
+ + DVT1 = 250.0m 
+ + EOT = 700.0p 
+ + ETA0 = 100.0m 
+ + ETAMOB = 95.00m 
+ + GEOMOD = 1.000  
+ + GIDLMOD = 0.000  
+ + K1RSCE = 0.000  
+ + KSATIV = 7.0 
+ + LINT = 0.000  
+ + LL = 0.000  
+ + LPA = 890.0m 
+ + LPE0 = 10.00n 
+ + MEXP = 2.000  
+ + AMEXP = 0.000  
+ + BMEXP = 100.0n 
+ + NBODY = 1.000E+22  
+ + NF = 1.000  
+ + NGATE = 0.000  
+ + NSD = 2.000E+26  
+ + PHIG = 4.498  
+ + RDSW = 80.00  
+ + ARDSW = 0.000  
+ + BRDSW = 20.00n 
+ + PTWG = 0.000  
+ + APTWG = 0.000  
+ + BPTWG = 1.000  
+ + U0 = 15.00m 
+ + UP = 35.00n 
+ + VSAT = 200.00K 
+ + AVSAT = 30.00K 
+ + BVSAT = 25.00n 
+ + EU = 1.000  
+ + UD = 0.000  
+ + AUD = 0.000  
+ + BUD = 110.0n 
+ + UA = 0.000  
+ + AUA = 0.000  
+ + BUA = 20.00n 
+ + UCS = 1.000  
+ + MOBMOD = 0.000  
+ + RDSMOD = 0.000  
+ + AGIDL = 0.000  
+ + BGIDL = 300.0MEG 
+ + EGIDL = 200.0m 
+ + DVT1SS = 700.0m 
+ + LU0 = 0.000  
+ + LKSATIV = 0.000  
+ + LVSAT = 40.00  
+ + DELTAVSAT = 1.000  
+ + PSAT = 2.000  
+ + DVTP0 = 19.00m 
+ + PCLM = 0.000  
+ + A1 = 4.000  
+ + A2 = 0.000  
+ + LA1 = 1.000  
+ + LCDSC = -1.700m 
+ + LETA0 = 0.000  
+ + BULKMOD =  1
+ + QMFACTORCV = 0.9
