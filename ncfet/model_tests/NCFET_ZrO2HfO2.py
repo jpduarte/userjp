@@ -35,7 +35,7 @@ sim1.updateparameter('dcbiases',[[0.1], np.concatenate((np.linspace(0,1.0,100),n
 #device parameters defined to sweep in simulation
 sim1.updateparameter('deviceparameter',['Lg','PHIG','Nch','TFIN','HFIN','tins','alpha1_P','alpha11_P','cgsfe','t_FE','gauss_n','SSrolloff','ul','QMFACTORCV'])
 #device parameter values for simulation
-sim1.updateparameter('deviceparametervalue',[[30000e-9],[4.57],[1e17],[3e-8],[3.0e-8],[0.9e-9],[-5.1e9],[6.1166e+11],[0.0],[5e-9],[200],[0.2],[50],[0.5]])
+sim1.updateparameter('deviceparametervalue',[[30000e-9],[4.57],[1e17],[3e-8],[3.0e-8],[0.9e-9],[-5.1e9],[6.1166e+11],[0.0],[5e-9],[10],[0.2],[50],[0.5]])
 #sim1.updateparameter('deviceparametervalue',[[30000e-9],[4.57],[1e17],[3e-8],[3.0e-8],[0.9e-9],[-5.1e9],[6.1166e+11],[0.0],[5e-9],[50],[0.2],[50],[0.5]])
 #add variables to save  
 sim1.updateparameter('vartosave',['qs','vfe','qmguess','q0','q1','q2','q3','q4','ids0'])#no ok: CBGSI
