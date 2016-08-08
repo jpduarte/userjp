@@ -1,0 +1,18 @@
+* "simulator" "HSPICE" 
+* "version" "G-2012.06-ENG1 32-BIT"
+* "format" "HSP"
+* "rundate" "22:14:28 08/06/2016 "
+* "netlist" "/users/jpduarte/research/userjp/ncfet/hspicesimulations/idvg/hspicesimauxtran.sp "
+* "runtitle" "*script to generate hspice simulation using cmdp, juan duarte"
+* time =    0.            
+* temperature =   27.0000        
+*** BEGIN: Saved Operating Point ***                     
+.option 
++ gmindc= 1.000e-12       
+.nodeset
++ 0.0 =-9.958e-02       
++ vb =-9.958e-02       
++ vd =   0.4004        
++ vg =-9.958e-02       
++ vs =-9.958e-02       
+***   END: Saved Operating Point ***                     

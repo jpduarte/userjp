@@ -46,7 +46,7 @@ sim1.updateparameter('absv','1e-6')
 ##################Simulation Run###########################################
 ###########################################################################
 P1 = plotgeneral.plotgeneral()
-pathandfile ="/users/jpduarte/research/userjp/ncfet/ULP14nmpmos.txt"
+pathandfile ="/users/jpduarte/research/userjp/ncfet/ULP14nm.txt"
 P1.updateparameter('symbol','o')
 P1.updateparameter('lw',2)
 P1.plotfiledata(pathandfile,'Vg','Ids',1)
@@ -57,11 +57,30 @@ P1.updateparameter('lw',2)
 P1.updateparameter('ylogflag',1)
 P1.plotfiledata(pathandfile,'Vg','Ids',2)
 
-sim1.runsim()
-sim1.hspicetotex('x','y')
+P1 = plotgeneral.plotgeneral()
+pathandfile ="/users/jpduarte/research/userjp/ncfet/hspicesimulations/idvg/ULPLg14nmFE10nmvds05FG.txt"
+P1.updateparameter('symbol','o')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','idsperum',1)
+
+
+P1.updateparameter('symbol','o')
+P1.updateparameter('lw',2)
+P1.updateparameter('ylogflag',1)
+P1.plotfiledata(pathandfile,'Vg','idsperum',2)
+
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','o')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','qms',3)
+
+P1.updateparameter('ylogflag',0)
+P1.updateparameter('symbol','o')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'Vg','vfes',4)
 #plot
 P1 = plotgeneral.plotgeneral()
-pathandfile = sim1.simulationfolder + sim1.simresultfilename
+pathandfile ="/users/jpduarte/research/userjp/ncfet/hspicesimulations/idvg/ULPLg14nmFE10nmvds05.txt"
 P1.updateparameter('symbol','-')
 P1.updateparameter('lw',2)
 P1.plotfiledata(pathandfile,'Vg','idsperum',1)
@@ -78,32 +97,11 @@ P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','-')
 P1.updateparameter('lw',2)
 P1.plotfiledata(pathandfile,'Vg','qms',3)
-P1.updateparameter('symbol','-.')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmsguesss',3)
-
-P1.updateparameter('ylogflag',1)
-P1.updateparameter('symbol','-')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qms',4)
-P1.updateparameter('symbol','-.')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmsguesss',4)
 
 P1.updateparameter('ylogflag',0)
 P1.updateparameter('symbol','-')
 P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmd',5)
-P1.updateparameter('symbol','-.')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmsguessd',5)
+P1.plotfiledata(pathandfile,'Vg','vfes',4)
 
-P1.updateparameter('ylogflag',1)
-P1.updateparameter('symbol','-')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmd',6)
-P1.updateparameter('symbol','-.')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmsguessd',6)
 
 plt.show() 

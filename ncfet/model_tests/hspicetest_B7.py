@@ -5,6 +5,7 @@ rootfolder = '/users/jpduarte/research'
 
 #indicate path for folders containing required classes
 import sys
+import os
 sys.path.insert(0, rootfolder+'/cmdp/hspicesupport')
 sys.path.insert(0, rootfolder+'/cmdp/plotscripts')
 #import class for hspice-python simulation
@@ -25,9 +26,9 @@ sim1.updateparameter('modelcardpath','/users/jpduarte/research/userjp/ncfet/mode
 #add path to folder which will contain simulation files
 sim1.updateparameter('simulationfolder',rootfolder+'/userjp/ncfet/hspicesimulations/idvg/')
 #define simulation file name
-sim1.updateparameter('simfilename','hspicesimaux')
+sim1.updateparameter('simfilename','hspicesimauxtran')
 #define simulation final results file 
-sim1.updateparameter('simresultfilename','ULPLg14nmFE0nmpmosvdsn07V.txt')
+sim1.updateparameter('simresultfilename','hspicesimauxtranresultFE10nmFGrho05_2.txt')
 #include node names in the order defined in verilog code
 sim1.updateparameter('nodes',['Vd', 'Vg', 'Vs', 'Vb'])
 #values for bias conditions of nodes
@@ -45,65 +46,29 @@ sim1.updateparameter('absv','1e-3')
 ###########################################################################
 ##################Simulation Run###########################################
 ###########################################################################
-P1 = plotgeneral.plotgeneral()
-pathandfile ="/users/jpduarte/research/userjp/ncfet/ULP14nmpmos.txt"
-P1.updateparameter('symbol','o')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','Ids',1)
 
-
-P1.updateparameter('symbol','o')
-P1.updateparameter('lw',2)
-P1.updateparameter('ylogflag',1)
-P1.plotfiledata(pathandfile,'Vg','Ids',2)
-
-sim1.runsim()
-sim1.hspicetotex('x','y')
+#sim1.runsim()
+os.system('hspice ' + sim1.simulationfolder +sim1.simfilename+'.sp -o ' + sim1.simulationfolder+sim1.simfilename)
+simfilename ='/users/jpduarte/research/userjp/ncfet/hspicesimulations/idvg/hspicesimauxtran.lis'
+simresultfilename ='/users/jpduarte/research/userjp/ncfet/hspicesimulations/idvg/'+sim1.simresultfilename
+sim1.hspicetotex2('x','y', simfilename,simresultfilename)
 #plot
 P1 = plotgeneral.plotgeneral()
-pathandfile = sim1.simulationfolder + sim1.simresultfilename
+pathandfile = simresultfilename
+P1.updateparameter('symbol','o')
+P1.updateparameter('lw',2)
+P1.plotfiledata(pathandfile,'sweepvar','idsperum',1)
+
+P1.plotfiledata(pathandfile,'sweepvar','vgs_noswap',2)
+
+P1.plotfiledata(pathandfile,'vgs_noswap','idsperum',3)
+
+
+P1.plotfiledata(pathandfile,'sweepvar','vgs_out',2)
+
+pathandfile ="/users/jpduarte/research/userjp/ncfet/hspicesimulations/idvg/ULPLg14nmFE0nmvds05.txt"
 P1.updateparameter('symbol','-')
 P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','idsperum',1)
-
-
-
-P1.updateparameter('symbol','-')
-P1.updateparameter('lw',2)
-P1.updateparameter('ylogflag',1)
-P1.plotfiledata(pathandfile,'Vg','idsperum',2)
-
-
-P1.updateparameter('ylogflag',0)
-P1.updateparameter('symbol','-')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qms',3)
-P1.updateparameter('symbol','-.')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmsguesss',3)
-
-P1.updateparameter('ylogflag',1)
-P1.updateparameter('symbol','-')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qms',4)
-P1.updateparameter('symbol','-.')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmsguesss',4)
-
-P1.updateparameter('ylogflag',0)
-P1.updateparameter('symbol','-')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmd',5)
-P1.updateparameter('symbol','-.')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmsguessd',5)
-
-P1.updateparameter('ylogflag',1)
-P1.updateparameter('symbol','-')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmd',6)
-P1.updateparameter('symbol','-.')
-P1.updateparameter('lw',2)
-P1.plotfiledata(pathandfile,'Vg','qmsguessd',6)
+P1.plotfiledata(pathandfile,'Vg','idsperum',3)
 
 plt.show() 
